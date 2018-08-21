@@ -252,7 +252,8 @@ def inception_v1(inputs,
                  prediction_fn=slim.softmax,
                  spatial_squeeze=True,
                  reuse=None,
-                 scope='InceptionV1'):
+                 scope='InceptionV1',
+                 layer_to_extract = None):
   """Defines the Inception V1 architecture.
 
   This architecture is defined in:

@@ -20,6 +20,7 @@ from __future__ import print_function
 
 import math
 import tensorflow as tf
+import os
 
 from datasets import dataset_factory
 from nets import nets_factory
@@ -79,6 +80,30 @@ tf.app.flags.DEFINE_float(
 tf.app.flags.DEFINE_integer(
     'eval_image_size', None, 'Eval image size')
 
+tf.app.flags.DEFINE_string(
+    'gpu_to_use', '', 'gpus to use')
+
+tf.app.flags.DEFINE_integer(
+    'save_summaries_secs', 1200,
+    'The frequency with which summaries are saved, in seconds.')
+
+tf.app.flags.DEFINE_bool(
+    'verbose_placement', False,
+    'Shows detailed information about device placement.')
+
+tf.app.flags.DEFINE_bool(
+    'hard_placement', False,
+    'Uses hard constraints for device placement on tensorflow sessions.')
+
+tf.app.flags.DEFINE_bool(
+    'fixed_memory', False,
+    'Allocates the entire memory at once.')
+
+
+tf.app.flags.DEFINE_bool(
+    'single_eval', False,
+    'If its a single eval or a loop eval.')
+
 FLAGS = tf.app.flags.FLAGS
 
 
@@ -86,7 +111,10 @@ def main(_):
   if not FLAGS.dataset_dir:
     raise ValueError('You must supply the dataset directory with --dataset_dir')
 
-  tf.logging.set_verbosity(tf.logging.INFO)
+  if FLAGS.gpu_to_use:
+    os.environ["CUDA_VISIBLE_DEVICES"] = FLAGS.gpu_to_use
+
+    tf.logging.set_verbosity(tf.logging.INFO)
   with tf.Graph().as_default():
     tf_global_step = slim.get_or_create_global_step()
 
@@ -147,14 +175,30 @@ def main(_):
     else:
       variables_to_restore = slim.get_variables_to_restore()
 
+    print('Logits shape: ', tf.shape(logits), sep='')
     predictions = tf.argmax(logits, 1)
+    print('Predictions shape: ', tf.shape(predictions), sep='')
+    
+    print('labels shape: ', tf.shape(labels), sep='')
     labels = tf.squeeze(labels)
+    print('labels shape: ', tf.shape(labels), sep='')
 
     # Define the metrics:
+#    names_to_values, names_to_updates = slim.metrics.aggregate_metric_map({
+#        'Accuracy': slim.metrics.streaming_accuracy(predictions, labels),
+#        'Recall_5': slim.metrics.streaming_recall_at_k(
+#            logits, labels, 5),
+#    })
     names_to_values, names_to_updates = slim.metrics.aggregate_metric_map({
-        'Accuracy': slim.metrics.streaming_accuracy(predictions, labels),
-        'Recall_5': slim.metrics.streaming_recall_at_k(
-            logits, labels, 5),
+        'accuracy': tf.metrics.accuracy(labels, predictions),
+        'mean_per_class_accuracy': tf.metrics.mean_per_class_accuracy(labels, predictions, dataset.num_classes - FLAGS.labels_offset),
+        'auc': tf.metrics.auc(labels, predictions),
+        "mse": tf.metrics.mean_squared_error(labels, predictions),
+        'precision': tf.metrics.precision(labels, predictions),
+        'recall': tf.metrics.recall(labels, predictions),
+        'true_positives': tf.metrics.true_positives(labels, predictions),
+        'false_negatives': tf.metrics.false_negatives(labels, predictions),
+        'false_positives': tf.metrics.false_positives(labels, predictions),
     })
 
     # Print the summaries to screen.
@@ -176,15 +220,35 @@ def main(_):
     else:
       checkpoint_path = FLAGS.checkpoint_path
 
+    session_config = tf.ConfigProto(
+        log_device_placement = FLAGS.verbose_placement, 
+        allow_soft_placement = not FLAGS.hard_placement)
+    if not FLAGS.fixed_memory :
+      session_config.gpu_options.allow_growth=True
+      
     tf.logging.info('Evaluating %s' % checkpoint_path)
 
-    slim.evaluation.evaluate_once(
-        master=FLAGS.master,
-        checkpoint_path=checkpoint_path,
-        logdir=FLAGS.eval_dir,
-        num_evals=num_batches,
-        eval_op=list(names_to_updates.values()),
-        variables_to_restore=variables_to_restore)
+
+    if FLAGS.single_eval:
+        slim.evaluation.evaluate_once(
+            master=FLAGS.master,
+            checkpoint_path=checkpoint_path,
+            logdir=FLAGS.eval_dir,
+            num_evals=num_batches,
+            eval_op=list(names_to_updates.values()),
+            variables_to_restore=variables_to_restore,
+            session_config=session_config)
+    else:
+        slim.evaluation.evaluation_loop(
+            master=FLAGS.master,
+    #        checkpoint_path=checkpoint_path,
+            checkpoint_dir=FLAGS.checkpoint_path,
+            logdir=FLAGS.eval_dir,
+            num_evals=num_batches,
+            eval_op=list(names_to_updates.values()),
+            variables_to_restore=variables_to_restore,
+            eval_interval_secs=FLAGS.save_summaries_secs,
+            session_config=session_config)
 
 
 if __name__ == '__main__':

@@ -81,7 +81,8 @@ arg_scopes_map = {'alexnet_v2': alexnet.alexnet_v2_arg_scope,
                  }
 
 
-def get_network_fn(name, num_classes, weight_decay=0.0, is_training=False):
+def get_network_fn(name, num_classes, weight_decay=0.0, is_training=False, layer_to_extract=None):
+#def get_network_fn(name, num_classes, weight_decay=0.0, is_training=False):
   """Returns a network_fn such as `logits, end_points = network_fn(images)`.
 
   Args:
@@ -105,7 +106,8 @@ def get_network_fn(name, num_classes, weight_decay=0.0, is_training=False):
   @functools.wraps(func)
   def network_fn(images):
     with slim.arg_scope(arg_scope):
-      return func(images, num_classes, is_training=is_training)
+       return func(images, num_classes, is_training=is_training, layer_to_extract=layer_to_extract)
+#       return func(images, num_classes, is_training=is_training)
   if hasattr(func, 'default_image_size'):
     network_fn.default_image_size = func.default_image_size
 
