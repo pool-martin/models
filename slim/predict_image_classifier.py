@@ -310,7 +310,10 @@ def main(_):
       if FLAGS.inception_layer == 'PreLogitsFlatten':
            features = end_points['PreLogitsFlatten']
       else:
-           features = end_points[FLAGS.inception_layer + '_Flatten']
+        if FLAGS.model_name == 'inception_v1':
+          features = end_points[FLAGS.inception_layer]
+        else:
+          features = end_points[FLAGS.inception_layer + '_Flatten']
       # Pools across replicas
       if FLAGS.pool_features == 'avg' :
         features = tf.reduce_mean(features, axis=0)
