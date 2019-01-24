@@ -10,7 +10,7 @@ RUN groupadd -g $OUTSIDE_GID $OUTSIDE_GROUP && \
 
 
 RUN pip3 install --upgrade pip
-RUN pip3 install cython pandas scikit-learn sk-video scikit-video==1.1.11 opencv-python matplotlib numpy dm-sonnet joblib keras wrapt tensorflow-probability-gpu tensorflow-hub
+RUN pip3 install cython pandas scikit-learn sk-video scikit-video==1.1.11 opencv-python matplotlib numpy joblib keras wrapt
 
 #USER $OUTSIDE_USER
 
