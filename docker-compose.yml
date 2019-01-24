@@ -1,7 +1,7 @@
 version: "2.3"
 
 services:
-  -models:
+  models:
     runtime: nvidia
     userns_mode: "host"
     entrypoint: /bin/bash
