@@ -1,0 +1,17 @@
+ FROM  tensorflow/tensorflow:1.3.0-gpu-py3
+
+ARG OUTSIDE_UID
+ARG OUTSIDE_USER
+ARG OUTSIDE_GROUP
+ARG OUTSIDE_GID
+
+RUN groupadd -g $OUTSIDE_GID $OUTSIDE_GROUP && \
+    useradd -r -u $OUTSIDE_UID -g $OUTSIDE_GROUP -s /bin/bash -G sudo,adm -p $(openssl passwd -1 $OUTSIDE_USER) $OUTSIDE_USER
+
+
+RUN pip3 install --upgrade pip
+RUN pip3 install cython pandas scikit-learn sk-video scikit-video==1.1.11 opencv-python matplotlib numpy dm-sonnet joblib keras wrapt tensorflow-probability-gpu tensorflow-hub
+
+#USER $OUTSIDE_USER
+
+WORKDIR /workspace
