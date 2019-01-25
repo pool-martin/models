@@ -318,8 +318,6 @@ def create_splits(args):
 
     create_video_split('network_training_set', '3D', positive_network_training_set, negative_network_training_set, args)
     create_video_split('network_validation_set', '3D', positive_network_validation_set, negative_network_validation_set, args)
-    create_video_split('svm_training_set', '3D', positive_svm_training_set, negative_svm_training_set, args)
-    create_video_split('svm_validation_set', '3D', positive_svm_validation_set, negative_svm_validation_set, args)
 
     print('################################ TEST SET ####################################')
 
