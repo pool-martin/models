@@ -62,7 +62,9 @@ python scripts/tf/convert_porn2k.py -s s1_a -gpu 1
 
 python slim/train_image_classifier.py --train_dir=/Exp/2kporn/art/inception_v4/s1_a/finetune/checkpoints --dataset_dir=/DL/2kporn/tfrecords/s1_a --dataset_name=porn2k     --dataset_split_name=train     --model_name=inception_v4     --checkpoint_path=/DL/initial_weigths/inception_v4/rgb_imagenet/model.ckpt --checkpoint_exclude_scopes=InceptionV4/Logits,InceptionV4/AuxLogits --save_interval_secs=3600     --optimizer=rmsprop     --normalize_per_image=1     --max_number_of_steps=217224 --experiment_tag="Experiment: Finetune; Model: Inceptionv4; Normalization: mode 1" --experiment_file=experiment.meta --batch_size=48 --gpu_to_use=0
 
-
+s1_a:
 len train = 208535
 len validation = 41010
 len test = 257252 
+steps epoch  = 208535 / batch = 4345
+s1_b:

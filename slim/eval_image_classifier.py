@@ -39,12 +39,15 @@ tf.app.flags.DEFINE_string(
     'master', '', 'The address of the TensorFlow master to use.')
 
 tf.app.flags.DEFINE_string(
-    'checkpoint_path', '/tmp/tfmodel/',
+    'checkpoint_path', 'checkpoints',
     'The directory where the model was written to or an absolute path to a '
     'checkpoint file.')
 
 tf.app.flags.DEFINE_string(
-    'eval_dir', '/tmp/tfmodel/', 'Directory where the results are saved to.')
+    'base_dir', '/tmp/tfmodel/', 'Directory where the results are saved to.')
+
+tf.app.flags.DEFINE_string(
+    'eval_dir', 'evals', 'Directory where the results are saved to.')
 
 tf.app.flags.DEFINE_integer(
     'num_preprocessing_threads', 4,
@@ -113,8 +116,14 @@ def main(_):
 
   if FLAGS.gpu_to_use:
     os.environ["CUDA_VISIBLE_DEVICES"] = FLAGS.gpu_to_use
+  
+  FLAGS.eval_dir = os.path.join(FLAGS.base_dir, FLAGS.eval_dir)
+  FLAGS.checkpoint_path = os.path.join(FLAGS.base_dir, FLAGS.checkpoint_path)
 
-    tf.logging.set_verbosity(tf.logging.INFO)
+  if not os.path.exists(FLAGS.eval_dir):
+    os.makedirs(FLAGS.eval_dir)
+
+  tf.logging.set_verbosity(tf.logging.INFO)
   with tf.Graph().as_default():
     tf_global_step = slim.get_or_create_global_step()
 
