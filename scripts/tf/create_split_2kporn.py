@@ -45,88 +45,92 @@ def load_args():
 
 
 def create_splits(args):
-    positive_network_validation_set = []
-    negative_network_validation_set = []
-    positive_network_training_set = []
-    negative_network_training_set = []
 
-    positive_svm_set = []
-    negative_svm_set = []
+    operations = ['training', 'test']
 
-    #collecting all split1 videos
-    with open(os.path.join(args.dataset_dir, 'folds/{}_positive_training.txt'.format(args.split_number))) as f:
-            positive_content = f.readlines()
-    with open(os.path.join(args.dataset_dir,'folds/{}_negative_training.txt'.format(args.split_number))) as f:
-            negative_content = f.readlines()
+    for operation in operations:
 
-    positive_folder_qty = len(positive_content) 
-    negative_folder_qty = len(negative_content)
-    print('Positive video qty: ', positive_folder_qty, ', negative video qty: ', negative_folder_qty)
+        positive_network_validation_set = []
+        negative_network_validation_set = []
+        positive_network_training_set = []
+        negative_network_training_set = []
 
-    #choosing the training and validation set
-    random.seed(a='seed', version=2)
-    secure_random = random.SystemRandom()
+        #collecting all split1 videos
+        with open(os.path.join(args.dataset_dir, 'folds/{}_positive_{}.txt'.format(args.split_number, operation))) as f:
+                positive_content = f.readlines()
+        with open(os.path.join(args.dataset_dir,'folds/{}_negative_{}.txt'.format(args.split_number, operation))) as f:
+                negative_content = f.readlines()
 
-    ########################################################
-    while((len(positive_content) + len(negative_content)) > (.85 * (positive_folder_qty + negative_folder_qty))):
-            positive_video_choosed = secure_random.choice(positive_content)
-            positive_network_validation_set.append(positive_video_choosed)
-            positive_content.remove(positive_video_choosed)
+        positive_folder_qty = len(positive_content) 
+        negative_folder_qty = len(negative_content)
+        print('Positive video qty: ', positive_folder_qty, ', negative video qty: ', negative_folder_qty)
 
-            negative_video_choosed = secure_random.choice(negative_content)
-            negative_network_validation_set.append(negative_video_choosed)
-            negative_content.remove(negative_video_choosed)
-    ########################################################
+        #choosing the training and validation set
+        random.seed(a='seed', version=2)
+        secure_random = random.SystemRandom()
 
-    #the rest is the network training set
-    positive_network_training_set = positive_content
-    negative_network_training_set = negative_content
+        ########################################################
+        while((len(positive_content) + len(negative_content)) > (.85 * (positive_folder_qty + negative_folder_qty))):
+                positive_video_choosed = secure_random.choice(positive_content)
+                positive_network_validation_set.append(positive_video_choosed)
+                positive_content.remove(positive_video_choosed)
 
-    full_dir_path = os.path.join(args.output_path, args.split_number)
-    command = "mkdir -p " + full_dir_path
-    print(command)
-    call(command, shell=True)
+                negative_video_choosed = secure_random.choice(negative_content)
+                negative_network_validation_set.append(negative_video_choosed)
+                negative_content.remove(negative_video_choosed)
+        ########################################################
 
-    print("positive_network_training_set %d" % len(positive_network_training_set))
-    print("negative_network_training_set %d" % len(negative_network_training_set))
-    print("positive_network_validation_set %d" % len(positive_network_validation_set))
-    print("negative_network_validation_set %d" % len(negative_network_validation_set))
+        #the rest is the network training set
+        positive_network_training_set = positive_content
+        negative_network_training_set = negative_content
 
-    print("total network %d" % (len(positive_network_training_set) + len(negative_network_training_set) + len(positive_network_validation_set) + len(negative_network_validation_set)))
-
-    print("qty network: %d, positive: %d [%f], negative %d [%f]" \
-    %(len(positive_network_training_set) + len(negative_network_training_set), 
-    len(positive_network_training_set), 
-    (100.0* len(positive_network_training_set))/len(positive_network_training_set + negative_network_training_set),
-    len(negative_network_training_set),
-    (100.0* len(negative_network_training_set))/len(positive_network_training_set + negative_network_training_set)))
-
-    #creating files for network training
-    positive_network_training_set_path = os.path.join(full_dir_path, 'positive_network_training_set.txt')
-    with open(positive_network_training_set_path, "w") as f:
-            for item in positive_network_training_set:
-                    f.write("%s" % item)
-    negative_network_training_set_path = os.path.join(full_dir_path, 'negative_network_training_set.txt')
-    with open(negative_network_training_set_path, "w") as f:
-            for item in negative_network_training_set:
-                    f.write("%s" % item)
-    #creating files for network validation
-    positive_network_validation_set_path = os.path.join(full_dir_path, 'positive_network_validation_set.txt')
-    with open(positive_network_validation_set_path, "w") as f:
-            for item in positive_network_validation_set:
-                    f.write("%s" % item)
-    negative_network_validation_set_path = os.path.join(full_dir_path, 'negative_network_validation_set.txt')
-    with open(negative_network_validation_set_path, "w") as f:
-            for item in negative_network_validation_set:
-                    f.write("%s" % item)
-
-    options = ['positive', 'negative']
-    for option in options:
-        from_file = os.path.join(args.dataset_dir, 'folds/{}_{}_test.txt'.format(args.split_number, option))
-        to_file   = os.path.join(args.output_path, args.split_number, '{}_test.txt'.format(option))
-        command = "cp {} {}".format(from_file, to_file)
+        split_extension = 'a' if operation == 'training' else 'b'
+        full_dir_path = os.path.join(args.output_path, '{}_{}'.format(args.split_number, split_extension))
+        command = "mkdir -p " + full_dir_path
         print(command)
         call(command, shell=True)
+
+        print("positive_network_training_set %d" % len(positive_network_training_set))
+        print("negative_network_training_set %d" % len(negative_network_training_set))
+        print("positive_network_validation_set %d" % len(positive_network_validation_set))
+        print("negative_network_validation_set %d" % len(negative_network_validation_set))
+
+        print("total network %d" % (len(positive_network_training_set) + len(negative_network_training_set) + len(positive_network_validation_set) + len(negative_network_validation_set)))
+
+        print("qty network: %d, positive: %d [%f], negative %d [%f]" \
+        %(len(positive_network_training_set) + len(negative_network_training_set), 
+        len(positive_network_training_set), 
+        (100.0* len(positive_network_training_set))/len(positive_network_training_set + negative_network_training_set),
+        len(negative_network_training_set),
+        (100.0* len(negative_network_training_set))/len(positive_network_training_set + negative_network_training_set)))
+
+        #creating files for network training
+        positive_network_training_set_path = os.path.join(full_dir_path, 'positive_network_training_set.txt')
+        with open(positive_network_training_set_path, "w") as f:
+                for item in positive_network_training_set:
+                        f.write("%s" % item)
+        negative_network_training_set_path = os.path.join(full_dir_path, 'negative_network_training_set.txt')
+        with open(negative_network_training_set_path, "w") as f:
+                for item in negative_network_training_set:
+                        f.write("%s" % item)
+        #creating files for network validation
+        positive_network_validation_set_path = os.path.join(full_dir_path, 'positive_network_validation_set.txt')
+        with open(positive_network_validation_set_path, "w") as f:
+                for item in positive_network_validation_set:
+                        f.write("%s" % item)
+        negative_network_validation_set_path = os.path.join(full_dir_path, 'negative_network_validation_set.txt')
+        with open(negative_network_validation_set_path, "w") as f:
+                for item in negative_network_validation_set:
+                        f.write("%s" % item)
+
+        options = ['positive', 'negative']
+        test_set = 'test' if operation == 'training' else 'training'
+        for option in options:
+                from_file = os.path.join(args.dataset_dir, 'folds/{}_{}_{}.txt'.format(args.split_number, option, test_set))
+                to_file   = os.path.join(full_dir_path, '{}_test.txt'.format(option))
+                command = "cp {} {}".format(from_file, to_file)
+                print(command)
+                call(command, shell=True)
 
 def main():
     print('> Create splits from videos -', time.asctime( time.localtime(time.time())))
