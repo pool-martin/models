@@ -61,7 +61,7 @@ def load_args():
                                     dest='output_path',
                                     help='path to output the extracted frames.',
                                     type=str, required=False, default='/DL/2kporn/tfrecords/')
-    ap.add_argument('-o', '--label-dir',
+    ap.add_argument('-l', '--label-dir',
                                     dest='label_dir',
                                     help='labels dir.',
                                     type=str, required=False, default='/Exp/2kporn/splits/')
