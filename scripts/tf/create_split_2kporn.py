@@ -38,6 +38,11 @@ def load_args():
                                     dest='split_number',
                                     help='split to be created.',
                                     type=str, required=False, default='s1')
+    ap.add_argument('-gpu', '--gpu-to-use',
+                                    dest='gpu_to_use',
+                                    help='gpu to use.',
+                                    type=str, required=False, default=None)
+
     args = ap.parse_args()
     print(args)
     return args
@@ -133,9 +138,13 @@ def create_splits(args):
                 call(command, shell=True)
 
 def main():
+
     print('> Create splits from videos -', time.asctime( time.localtime(time.time())))
     args = load_args()
     split_path = os.path.join(args.output_path, args.split_number)
+    if args.gpu_to_use:
+        os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu_to_use
+
     if os.path.exists(split_path):
         print('Warning The split {} already exists in {}. We are exiting because this code can\'t reproduce the same sort previously done.\n If you need delete the split folder '.format(args.split_number, split_path))
     else:
