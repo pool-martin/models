@@ -444,7 +444,7 @@ def extract():
           record += [ _PREDICTION_OUTPUT_FORMAT % feats[f]  for f in range(feature_size) ]
           print(', '.join(record), file=outfile)
         else :
-          if pred:
+          if pred is not None:
             pickle.dump([image_id, label, feats, pred], outfile)
           else:
             pickle.dump([image_id, label, feats], outfile)
