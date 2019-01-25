@@ -48,7 +48,7 @@ def load_args():
     ap.add_argument('-e', '--excluded-scope',
                                     dest='excluded_scope',
                                     help='excluded scope.',
-                                    type=str, required=False, default=None)
+                                    type=str, required=False, default="None")
     ap.add_argument('-b', '--blacklist-file',
                                     dest='blacklist_file',
                                     help='path to output the extracted frames.',
