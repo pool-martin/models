@@ -161,3 +161,29 @@ def show_video_frame(video_name, frame_no):
 
 if __name__ == '__main__':
     show_video_frame('/home/jp/repos/DL/2kporn/videos/vNonPorn000001.mp4', 800)
+
+
+
+
+def extract_video_frames(video_name, video_path, output_path, frames_to_extract):
+    video_frames = []
+    image_size = [224,224]
+
+    frame_ids_to_extract = [float(frame.split('_')[2]) for frame in frames_to_extract]
+
+    fvs = FileVideoStream(video_path, frames_to_extract=frame_ids_to_extract).start()
+
+    if (fvs.isOpened() == False): raise ValueError('Error opening video {}'.format(video_path))
+
+    for frame_name in frames_to_extract:
+
+        ret, frame_no, frame = fvs.read()
+        if (ret == False): 
+            print('Error extracting video {} frame {} index {}'.format(video_path, frame_no, frame_name))
+        else:
+          # unfortunately opencv uses bgr color format as default
+          frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+          frame = cv2.resize(frame, tuple(image_size), interpolation=cv2.INTER_CUBIC)
+          cv2.imwrite(os.path.join(output_path, video_name, '{}.jpg'.format(frame_name)), frame)
+
+    fvs.stop()
