@@ -69,6 +69,11 @@ def load_args():
                                     dest='split_number',
                                     help='split to be created.',
                                     type=str, required=False, default='s1_a')
+    ap.add_argument('-gpu', '--gpu-to-use',
+                                    dest='gpu_to_use',
+                                    help='gpu to use.',
+                                    type=str, required=False, default=None)
+
     args = ap.parse_args()
     print(args)
     return args
@@ -289,4 +294,8 @@ def run(mode, split_number, label_dir, dataset_dir, output_path, blacklist_file=
 
 if __name__=='__main__' :
   args = load_args()
+
+  if args.gpu_to_use:
+    os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu_to_use
+
   run(mode=args.mode, split_number=args.split_number, label_dir=args.label_dir, dataset_dir=args.dataset_dir, output_path=args.output_path, blacklist_file=args.blacklist_file, excluded_scope=args.excluded_scope)
