@@ -77,7 +77,7 @@ def main():
         test_set = f.readlines()
 
     all_set = network_training_set + network_validation_set + test_set
-    extract(all_set)
+    extract(args, all_set)
 
 if __name__ == '__main__':
     main()
