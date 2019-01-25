@@ -378,6 +378,9 @@ def _get_init_fn():
   if FLAGS.checkpoint_path is None:
     return None
 
+  if not os.path.exists(FLAGS.train_dir):
+        os.makedirs(FLAGS.train_dir)
+  
   # Warn the user if a checkpoint exists in the train_dir. Then we'll be
   # ignoring the checkpoint anyway.
   if tf.train.latest_checkpoint(FLAGS.train_dir):

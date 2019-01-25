@@ -40,3 +40,29 @@ running TensorFlow 0.12 or earlier, please
 - [transformer](transformer): spatial transformer network, which allows the spatial manipulation of data within the network.
 - [tutorials](tutorials): models described in the [TensorFlow tutorials](https://www.tensorflow.org/tutorials/).
 - [video_prediction](video_prediction): predicting future video frames with neural advection.
+
+
+
+
+
+after clone
+
+~/docker-compose up -d --build --scale models=3 models
+
+
+python scripts/tf/create_split_2kporn.py -s s1
+
+ python scripts/tf/check_videos_limits.py 
+
+python scripts/tf/create_sets.py --sample-rate 1 --snippet-length 1 --snippet-width 1 --engine-type opencv --split-number s1
+
+python scripts/tf/extract_frames.py -s s1_a
+
+python scripts/tf/convert_porn2k.py -s s1_a
+
+python slim/train_image_classifier.py --train_dir=/Exp/2kporn/art/inception_v4/s1_a/finetune/checkpoints --dataset_dir=/DL/2kporn/tfrecords/s1_a --dataset_name=porn2k     --dataset_sjp@0143dd405476:/workspace$ python slim/train_image_classifier.py --train_dir=/Exp/2kporn/art/inception_v4/s1_a/finetune/checkpoints --dataset_dir=/DL/2kporn/tfrecords/s1_a --dataset_name=porn2k     --dataset_split_name=train     --model_name=inception_v4     --checkpoint_path=/DL/initial_weigths/inception_v4/rgb_imagenet/model.ckpt --checkpoint_exclude_scopes=InceptionV4/Logits,InceptionV4/AuxLogits --save_interval_secs=3600     --optimizer=rmsprop     --normalize_per_image=1     --max_number_of_steps=217224 --experiment_tag="Experiment: Finetune; Model: Inceptionv4; Normalization: mode 1" --experiment_file=/Exp/2kporn/art/inception_v4/s1_a/finetune/checkpoints/experiment.meta --batch_size=48 --gpu_to_use=0,1
+
+
+len train = 208535
+len validation = 41010
+len test = 257252 
