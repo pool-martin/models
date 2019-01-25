@@ -171,7 +171,7 @@ def _convert_dataset(split_name, metadata, dataset_dir, output_path):
         sys.stdout.flush()
 
         # Read the filename:
-        meta = metadata.next()
+        meta = next(metadata)
         video_name = meta[0]
         image_id = '{}_{}_{}'.format(meta[0], meta[1], meta[2])
         image_name = '{}.jpg'.format(image_id)
