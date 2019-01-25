@@ -64,11 +64,11 @@ def get_split(split_name, dataset_dir, file_pattern=None, reader=None):
   print('SPLIT', split_name)  
   print('===================================')
   if 'svm' in split_name:
-    SPLITS_TO_SIZES  = pickle.load(open(os.path.join(dataset_dir, 'svm_splits_to_sizes.pkl'),  'r'))
-    CLASSES_TO_SIZES = pickle.load(open(os.path.join(dataset_dir, 'svm_classes_to_sizes.pkl'), 'r'))
+    SPLITS_TO_SIZES  = pickle.load(open(os.path.join(dataset_dir, 'svm_splits_to_sizes.pkl'),  'rb'))
+    CLASSES_TO_SIZES = pickle.load(open(os.path.join(dataset_dir, 'svm_classes_to_sizes.pkl'), 'rb'))
   else:
-    SPLITS_TO_SIZES  = pickle.load(open(os.path.join(dataset_dir, 'splits_to_sizes.pkl'),  'r'))
-    CLASSES_TO_SIZES = pickle.load(open(os.path.join(dataset_dir, 'classes_to_sizes.pkl'), 'r'))
+    SPLITS_TO_SIZES  = pickle.load(open(os.path.join(dataset_dir, 'splits_to_sizes.pkl'),  'rb'))
+    CLASSES_TO_SIZES = pickle.load(open(os.path.join(dataset_dir, 'classes_to_sizes.pkl'), 'rb'))
 
   if split_name not in SPLITS_TO_SIZES:
     raise ValueError('split name %s was not recognized.' % split_name)
