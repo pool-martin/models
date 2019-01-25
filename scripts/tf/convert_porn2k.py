@@ -137,7 +137,7 @@ class ImageReader(object):
 def _get_dataset_filename(output_path, split_name, shard_id, num_shards):
   output_filename = 'porn2k_%s_%05d-of-%05d.tfrecord' % (
       split_name, shard_id+1, num_shards)
-  return os.path.join(output_path, split_name, output_filename)
+  return os.path.join(output_path, output_filename)
 
 def _convert_dataset(split_name, metadata, dataset_dir, output_path):
   """Converts the given images and metadata to a TFRecord dataset.
@@ -159,6 +159,7 @@ def _convert_dataset(split_name, metadata, dataset_dir, output_path):
     image_reader = ImageReader()
 
     for shard_id in range(num_shards) :
+      #  /DL/2kporn/tfrecords/s1_a/train/porn2k_train_00001-of-00204.tfrecord
       output_filename = _get_dataset_filename(output_path, split_name, shard_id, num_shards)
       tfrecord_writer = tf.python_io.TFRecordWriter(output_filename);
 
@@ -172,9 +173,9 @@ def _convert_dataset(split_name, metadata, dataset_dir, output_path):
         # Read the filename:
         meta = metadata.next()
         video_name = meta[0]
-        image_file = os.path.join(dataset_dir, video_name, image_name)
         image_id = '{}_{}_{}'.format(meta[0], meta[1], meta[2])
         image_name = '{}.jpg'.format(image_id)
+        image_file = os.path.join(dataset_dir, video_name, image_name)
 #        print('INFO: image_id', image_id,  file=sys.stderr) 
         image_data = tf.gfile.FastGFile(image_file, 'r').read()
         height, width = image_reader.read_image_dims(session, image_data)
