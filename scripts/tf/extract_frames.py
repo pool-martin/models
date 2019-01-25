@@ -43,7 +43,7 @@ def extractVideoFrames(args, video, video_frames):
 
     frames_to_extract = [frame for frame in video_frames if not file_exists(args, video, frame)]
 
-    video_path = os.path.join(args.dataset_dir, 'videos', video)
+    video_path = os.path.join(args.dataset_dir, 'videos', '{}.mp4'.format(video))
     opencv.extract_video_frames(video, video_path, args.output_path, frames_to_extract)
 
 
