@@ -322,6 +322,7 @@ def inception_v4(inputs, num_classes=1001, is_training=True,
           net = slim.flatten(net, scope='PreLogitsFlatten')
           if layer_to_extract and layer_to_extract in ['Mixed_7b', 'Mixed_7c']:
               end_points[layer_to_extract + '_Flatten'] = net
+              return net, end_points
           end_points['PreLogitsFlatten'] = net
           # 1536
           logits = slim.fully_connected(net, num_classes, activation_fn=None,

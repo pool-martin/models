@@ -493,7 +493,7 @@ def extract():
             print_replica(next_id, next_lab, next_feats)
           else :
             for r in range(FLAGS.eval_replicas) :
-              print_replica(next_id, next_lab, next_feats[r])
+              print_replica(next_id, next_lab, next_feats[r], nada)
         else :
           if pooled_scores :
             list_ids.append(next_id)
