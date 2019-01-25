@@ -205,9 +205,6 @@ def main(_):
   if FLAGS.output_format=='pickle' and not FLAGS.extract_features :
     raise ValueError('Option --output_format=pickle requires --extract_features')
 
-  if FLAGS.output_format=='pickle' and not FLAGS.output_file :
-    raise ValueError('Option --output_format=pickle requires --output_file')
-
   if not FLAGS.normalize_per_image in [0, 1, 2] :
     raise ValueError('Invalid value for --normalize_per_image: must be 0, 1 or 2')
 
