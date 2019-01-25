@@ -168,6 +168,8 @@ if __name__ == '__main__':
 def extract_video_frames(video_name, video_path, output_path, frames_to_extract):
     image_size = [224,224]
 
+    print('processing', video_name)
+
     output_dir = os.path.join(output_path, video_name)
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
