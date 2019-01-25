@@ -196,7 +196,7 @@ def get_file_list_content(filename):
   content = [ m.split('_') for m in content ]
   return content
 
-def run(mode, split_number, label_dir, dataset_dir, blacklist_file=None, excluded_scope=None, output_path) :
+def run(mode, split_number, label_dir, dataset_dir, output_path, blacklist_file=None, excluded_scope=None) :
   """Runs the download and conversion operation.
   Args:
     mode: TRAIN or TEST
@@ -288,4 +288,4 @@ def run(mode, split_number, label_dir, dataset_dir, blacklist_file=None, exclude
 
 if __name__=='__main__' :
   args = load_args()
-  run(mode=args.mode, split_number=args.split_number, label_dir=args.label_dir, dataset_dir=args.dataset_dir, blacklist_file=args.blacklist_file, excluded_scope=args.excluded_scope, output_path=args.output_path)
+  run(mode=args.mode, split_number=args.split_number, label_dir=args.label_dir, dataset_dir=args.dataset_dir, output_path=args.output_path, blacklist_file=args.blacklist_file, excluded_scope=args.excluded_scope)
