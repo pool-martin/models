@@ -159,6 +159,11 @@ tf.app.flags.DEFINE_float(
 tf.app.flags.DEFINE_string(
     'gpu_to_use', '', 'gpus to use')
 
+tf.app.flags.DEFINE_string(
+    'checkpoint_exclude_scopes', None,
+    'Comma-separated list of scopes of variables to exclude when restoring '
+    'from a checkpoint.')
+
 
 FLAGS = tf.app.flags.FLAGS
 
@@ -302,7 +307,23 @@ def extract():
     if FLAGS.model_name[:6]=='resnet' :
       logits = tf.squeeze(logits, [1, 2])
 
-    variables_to_restore = slim.get_variables_to_restore()
+    # variables_to_restore = slim.get_variables_to_restore()
+
+    exclusions = []
+    if FLAGS.checkpoint_exclude_scopes:
+      exclusions = [scope.strip()
+                  for scope in FLAGS.checkpoint_exclude_scopes.split(',')]
+
+    variables_to_restore = []
+    for var in slim.get_variables_to_restore():
+      excluded = False
+      for exclusion in exclusions:
+        if var.op.name.startswith(exclusion):
+          excluded = True
+          break
+      if not excluded:
+        variables_to_restore.append(var)
+
 
     def tf_reduce_maxabs_axis_0(tensor) :
       xtrm_rows  = tf.argmax(tf.abs(tensor), axis=0)
