@@ -177,7 +177,7 @@ def _convert_dataset(split_name, metadata, dataset_dir, output_path):
         image_name = '{}.jpg'.format(image_id)
         image_file = os.path.join(dataset_dir, video_name, image_name)
 #        print('INFO: image_id', image_id,  file=sys.stderr) 
-        image_data = tf.gfile.FastGFile(image_file, 'r').read()
+        image_data = tf.gfile.FastGFile(image_file, 'rb').read()
         height, width = image_reader.read_image_dims(session, image_data)
 
 #        class_name = os.path.basename(os.path.dirname(filenames[i]))

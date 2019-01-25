@@ -15,3 +15,5 @@ python scripts/tf/create_split_2kporn.py -s s1
 python scripts/tf/create_sets.py --sample-rate 1 --snippet-length 1 --snippet-width 1 --engine-type opencv --split-number s1
 
 python scripts/tf/extract_frames.py -s s1_a
+
+python scripts/tf/convert_porn2k.py -s s1_a
