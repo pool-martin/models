@@ -665,41 +665,41 @@ def main(_):
     #  Add evaluation loop.   #
     ###########################
     def loop_evaluation() :
-	  with tf.device('/cpu:0'):
-		# Choose the metrics to compute:
-	#   predictions = tf.to_int32(end_points['Predictions'])
-		predictions = end_points['Predictions']
-		# Choose the metrics to compute:
-		names_to_values, names_to_updates = slim.metrics.aggregate_metric_map({
-			'accuracy': tf.metrics.accuracy(predictions, labels),
-			"mse": tf.metrics.mean_squared_error(predictions, labels),
-			'precision': tf.metrics.precision(predictions, labels),
-			'recall': tf.metrics.recall(predictions, labels),
-		})
+      with tf.device('/cpu:0'):
+        # Choose the metrics to compute:
+        #   predictions = tf.to_int32(end_points['Predictions'])
+        predictions = end_points['Predictions']
+        # Choose the metrics to compute:
+        names_to_values, names_to_updates = slim.metrics.aggregate_metric_map({
+            'accuracy': tf.metrics.accuracy(predictions, labels),
+            "mse": tf.metrics.mean_squared_error(predictions, labels),
+            'precision': tf.metrics.precision(predictions, labels),
+            'recall': tf.metrics.recall(predictions, labels),
+        })
 
-		# Create the summary ops such that they also print out to std output:
-		eval_summary_ops = []
-		for metric_name, metric_value in names_to_values.iteritems():
-		  op = tf.summary.scalar(metric_name, metric_value)
-		  op = tf.Print(op, [metric_value], metric_name)
-		  eval_summary_ops.append(op)
+        # Create the summary ops such that they also print out to std output:
+        eval_summary_ops = []
+        for metric_name, metric_value in names_to_values.iteritems():
+            op = tf.summary.scalar(metric_name, metric_value)
+            op = tf.Print(op, [metric_value], metric_name)
+            eval_summary_ops.append(op)
 
-	##    num_examples = dataset.num_samples
-	##    batch_size = FLAGS.batch_size
-	##    num_batches = math.ceil(num_examples / float(batch_size))
+    ##    num_examples = dataset.num_samples
+    ##    batch_size = FLAGS.batch_size
+    ##    num_batches = math.ceil(num_examples / float(batch_size))
 
-		# Setup the global step.
-		slim.get_or_create_global_step()
+        # Setup the global step.
+        slim.get_or_create_global_step()
 
-		slim.evaluation.evaluation_loop(
-			master=FLAGS.master,
-			checkpoint_dir=FLAGS.train_dir,
-			logdir=FLAGS.train_dir,
-	#        num_evals=num_batches, #defaul=1
-			eval_op=names_to_updates.values(),
-			summary_op=tf.summary.merge(eval_summary_ops),
-			eval_interval_secs=FLAGS.save_summaries_secs)
-			
+        slim.evaluation.evaluation_loop(
+            master=FLAGS.master,
+            checkpoint_dir=FLAGS.train_dir,
+            logdir=FLAGS.train_dir,
+    #        num_evals=num_batches, #defaul=1
+            eval_op=names_to_updates.values(),
+            summary_op=tf.summary.merge(eval_summary_ops),
+            eval_interval_secs=FLAGS.save_summaries_secs)
+
 #    p1 = Process(target=loop_evaluation)
 #    p1.start()
 #    print("loop evaluation started")
