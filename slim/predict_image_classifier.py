@@ -437,14 +437,18 @@ def extract():
       else :
         pickle.dump([num_outputs, feature_size, FLAGS.__flags], outfile)
       # Features - outputs contents
-      def print_replica(image_id, label, feats, pred) :
+      def print_replica(image_id, label, feats, pred=None) :
         if FLAGS.output_format=='text' :
           record  = [ image_id ] if FLAGS.id_field_name else  [ ]
           record += [ str(label) ]
           record += [ _PREDICTION_OUTPUT_FORMAT % feats[f]  for f in range(feature_size) ]
           print(', '.join(record), file=outfile)
         else :
-          pickle.dump([image_id, label, feats, pred], outfile)
+          if pred:
+            pickle.dump([image_id, label, feats, pred], outfile)
+          else:
+            pickle.dump([image_id, label, feats], outfile)
+
     else : # => FLAGS.extract_features==False
       if pooled_scores :
         list_ids         = []
@@ -493,7 +497,7 @@ def extract():
             print_replica(next_id, next_lab, next_feats)
           else :
             for r in range(FLAGS.eval_replicas) :
-              print_replica(next_id, next_lab, next_feats[r], nada)
+              print_replica(next_id, next_lab, next_feats[r])
         else :
           if pooled_scores :
             list_ids.append(next_id)
