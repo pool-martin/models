@@ -169,6 +169,10 @@ def extract_video_frames(video_name, video_path, output_path, frames_to_extract)
     video_frames = []
     image_size = [224,224]
 
+    output_dir = os.path.join(output_path, video_name)
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
     frame_ids_to_extract = [float(frame.split('_')[2]) for frame in frames_to_extract]
 
     fvs = FileVideoStream(video_path, frames_to_extract=frame_ids_to_extract).start()
@@ -184,6 +188,6 @@ def extract_video_frames(video_name, video_path, output_path, frames_to_extract)
           # unfortunately opencv uses bgr color format as default
           frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
           frame = cv2.resize(frame, tuple(image_size), interpolation=cv2.INTER_CUBIC)
-          cv2.imwrite(os.path.join(output_path, video_name, '{}.jpg'.format(frame_name)), frame)
+          cv2.imwrite(os.path.join(output_dir, '{}.jpg'.format(frame_name)), frame)
 
     fvs.stop()
