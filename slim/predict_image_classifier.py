@@ -156,9 +156,17 @@ tf.app.flags.DEFINE_integer(
 tf.app.flags.DEFINE_float(
     'minimum_area_to_crop', 0.05, 'Minimum area to keep in cropping for augmentation')
 
+tf.app.flags.DEFINE_string(
+    'gpu_to_use', '', 'gpus to use')
+
+
 FLAGS = tf.app.flags.FLAGS
 
 def main(_):
+
+  if FLAGS.gpu_to_use:
+    os.environ["CUDA_VISIBLE_DEVICES"] = FLAGS.gpu_to_use
+
   if not FLAGS.dataset_dir :
     raise ValueError('You must supply the dataset directory with --dataset_dir')
 
