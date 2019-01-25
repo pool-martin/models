@@ -13,7 +13,9 @@
 # limitations under the License.
 # ==============================================================================
 """Contains the definition of the Inception V4 architecture.
+
 As described in http://arxiv.org/abs/1602.07261.
+
   Inception-v4, Inception-ResNet and the Impact of Residual Connections
     on Learning
   Christian Szegedy, Sergey Ioffe, Vincent Vanhoucke, Alex Alemi
@@ -144,6 +146,7 @@ def block_inception_c(inputs, scope=None, reuse=None):
 
 def inception_v4_base(inputs, final_endpoint='Mixed_7d', scope=None):
   """Creates the Inception V4 network up to the given final endpoint.
+
   Args:
     inputs: a 4-D tensor of size [batch_size, height, width, 3].
     final_endpoint: specifies the endpoint to construct the network up to.
@@ -153,9 +156,11 @@ def inception_v4_base(inputs, final_endpoint='Mixed_7d', scope=None):
       'Mixed_6f', 'Mixed_6g', 'Mixed_6h', 'Mixed_7a', 'Mixed_7b', 'Mixed_7c',
       'Mixed_7d']
     scope: Optional variable_scope.
+
   Returns:
     logits: the logits outputs of the model.
     end_points: the set of end_points from the inception model.
+
   Raises:
     ValueError: if final_endpoint is not set to one of the predefined values,
   """
@@ -253,8 +258,10 @@ def inception_v4(inputs, num_classes=1001, is_training=True,
                  dropout_keep_prob=0.8,
                  reuse=None,
                  scope='InceptionV4',
-                 create_aux_logits=True):
+                 create_aux_logits=True,
+				 layer_to_extract = None):
   """Creates the Inception V4 model.
+
   Args:
     inputs: a 4-D tensor of size [batch_size, height, width, 3].
     num_classes: number of predicted classes.
@@ -264,6 +271,7 @@ def inception_v4(inputs, num_classes=1001, is_training=True,
       able to reuse 'scope' must be given.
     scope: Optional variable_scope.
     create_aux_logits: Whether to include the auxiliary logits.
+
   Returns:
     logits: the logits outputs of the model.
     end_points: the set of end_points from the inception model.
@@ -280,7 +288,10 @@ def inception_v4(inputs, num_classes=1001, is_training=True,
         if create_aux_logits:
           with tf.variable_scope('AuxLogits'):
             # 17 x 17 x 1024
-            aux_logits = end_points['Mixed_6h']
+            if layer_to_extract and layer_to_extract in ['Mixed_6b', 'Mixed_6c', 'Mixed_6d', 'Mixed_6e', 'Mixed_6f', 'Mixed_6g', 'Mixed_6h']:
+                aux_logits = end_points[layer_to_extract]
+            else:
+                aux_logits = end_points['Mixed_6h']
             aux_logits = slim.avg_pool2d(aux_logits, [5, 5], stride=3,
                                          padding='VALID',
                                          scope='AvgPool_1a_5x5')
@@ -290,6 +301,10 @@ def inception_v4(inputs, num_classes=1001, is_training=True,
                                      aux_logits.get_shape()[1:3],
                                      padding='VALID', scope='Conv2d_2a')
             aux_logits = slim.flatten(aux_logits)
+            if layer_to_extract:
+                end_points[layer_to_extract + '_Flatten'] = aux_logits
+            else:
+                end_points['PreAuxLogitsFlatten'] = aux_logits
             aux_logits = slim.fully_connected(aux_logits, num_classes,
                                               activation_fn=None,
                                               scope='Aux_logits')
@@ -297,12 +312,16 @@ def inception_v4(inputs, num_classes=1001, is_training=True,
 
         # Final pooling and prediction
         with tf.variable_scope('Logits'):
+          if layer_to_extract and layer_to_extract in ['Mixed_7b', 'Mixed_7c']:
+              net = end_points[layer_to_extract]
           # 8 x 8 x 1536
           net = slim.avg_pool2d(net, net.get_shape()[1:3], padding='VALID',
                                 scope='AvgPool_1a')
           # 1 x 1 x 1536
           net = slim.dropout(net, dropout_keep_prob, scope='Dropout_1b')
           net = slim.flatten(net, scope='PreLogitsFlatten')
+          if layer_to_extract and layer_to_extract in ['Mixed_7b', 'Mixed_7c']:
+              end_points[layer_to_extract + '_Flatten'] = net
           end_points['PreLogitsFlatten'] = net
           # 1536
           logits = slim.fully_connected(net, num_classes, activation_fn=None,
