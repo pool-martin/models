@@ -391,7 +391,7 @@ def extract():
     init_fn = slim.assign_from_checkpoint_fn(checkpoint_path,
       variables_to_restore) # slim.get_model_variables(FLAGS.model_name))
 
-    outfile = open(FLAGS.output_file, 'w') if FLAGS.output_file else sys.stdout
+    outfile = open(FLAGS.output_file, 'wb') if FLAGS.output_file else sys.stdout
     num_outputs = num_samples if pooled_features else num_samples * FLAGS.eval_replicas
     tensor_id = image_id if FLAGS.id_field_name else nada
     if FLAGS.extract_features :
