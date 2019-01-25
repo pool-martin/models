@@ -160,10 +160,10 @@ def _convert_dataset(split_name, metadata, dataset_dir, output_path):
   if ( dataset_size % _NUM_PER_SHARD < int(_NUM_PER_SHARD/3.0) ) :
     num_shards = max(num_shards-1, 1)
 
-    session_config = tf.ConfigProto(
-        log_device_placement = FLAGS.verbose_placement,
-        allow_soft_placement = not FLAGS.hard_placement)
-    session_config.gpu_options.allow_growth=True
+  session_config = tf.ConfigProto(
+      log_device_placement = False,
+      allow_soft_placement = False)
+  session_config.gpu_options.allow_growth=True
 
   with tf.Graph().as_default(), tf.Session(config=session_config) as session :
     image_reader = ImageReader()
