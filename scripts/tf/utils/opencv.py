@@ -166,7 +166,6 @@ if __name__ == '__main__':
 
 
 def extract_video_frames(video_name, video_path, output_path, frames_to_extract):
-    video_frames = []
     image_size = [224,224]
 
     output_dir = os.path.join(output_path, video_name)
