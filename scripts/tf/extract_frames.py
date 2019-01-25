@@ -70,11 +70,11 @@ def main():
     network_validation_set_path = os.path.join(splits_dir_path, 'network_validation_set.txt')
     test_set_path = os.path.join(splits_dir_path, 'test_set.txt')
     with open(network_training_set_path) as f:
-        network_training_set = f.readlines()
+        network_training_set = f.read().splitlines()
     with open(network_validation_set_path) as f:
-        network_validation_set = f.readlines()
+        network_validation_set = f.read().splitlines()
     with open(test_set_path) as f:
-        test_set = f.readlines()
+        test_set = f.read().splitlines()
 
     all_set = network_training_set + network_validation_set + test_set
     extract(args, all_set)
