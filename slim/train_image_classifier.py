@@ -378,9 +378,6 @@ def _get_init_fn():
   if FLAGS.checkpoint_path is None:
     return None
 
-  if not os.path.exists(FLAGS.train_dir):
-        os.makedirs(FLAGS.train_dir)
-  
   # Warn the user if a checkpoint exists in the train_dir. Then we'll be
   # ignoring the checkpoint anyway.
   if tf.train.latest_checkpoint(FLAGS.train_dir):
@@ -445,7 +442,10 @@ def main(_):
 
   if FLAGS.gpu_to_use:
     os.environ["CUDA_VISIBLE_DEVICES"] = FLAGS.gpu_to_use
-  
+
+  if not os.path.exists(FLAGS.train_dir):
+    os.makedirs(FLAGS.train_dir)
+
   tf.logging.set_verbosity(tf.logging.INFO)
   with tf.Graph().as_default():
     #######################
@@ -733,7 +733,7 @@ def main(_):
     start = datetime.datetime.utcnow()
     print('Started on (UTC): ', start, sep='')
     if not FLAGS.experiment_file is None :
-      experiment_file = open(FLAGS.experiment_file, 'w')
+      experiment_file = open(os.path.join(FLAGS.train_dir, FLAGS.experiment_file), 'w')
       print('Experiment metadata file:', file=experiment_file)
       print(FLAGS.experiment_file, file=experiment_file)
       print('========================', file=experiment_file)
