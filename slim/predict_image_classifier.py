@@ -48,12 +48,12 @@ tf.app.flags.DEFINE_string(
   'master', '', 'The address of the TensorFlow master to use.')
 
 tf.app.flags.DEFINE_string(
-  'checkpoint_path', '/tmp/tfmodel/',
+  'checkpoint_path', None,
   'The directory where the model was written to or an absolute path to a '
   'checkpoint file.')
 
 tf.app.flags.DEFINE_string(
-  'eval_dir', '/tmp/tfmodel/', 'Directory where the results are saved to.')
+  'base_dir', None, 'The directory where the experiment is running.')
 
 tf.app.flags.DEFINE_integer(
   'num_preprocessing_threads', 4,
@@ -67,6 +67,9 @@ tf.app.flags.DEFINE_string(
 
 tf.app.flags.DEFINE_string(
   'dataset_split_name', 'test', 'The name of the test split.')
+
+tf.app.flags.DEFINE_string(
+  'dataset_split_names', 'train,validation,test', 'The name of the test split.')
 
 tf.app.flags.DEFINE_string(
   'dataset_dir', None, 'The directory where the dataset files are stored.')
@@ -200,6 +203,21 @@ def main(_):
   if not FLAGS.normalize_per_image in [0, 1, 2] :
     raise ValueError('Invalid value for --normalize_per_image: must be 0, 1 or 2')
 
+  if FLAGS.checkpoint_path == None:
+    FLAGS.checkpoint_path = os.path.join(FLAGS.base_dir, 'checkpoints')
+
+  output_dir = os.path.join(FLAGS.base_dir, 'svm.features')
+
+  if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
+
+  for dataset_split_name in FLAGS.dataset_split_names.split(','):
+    FLAGS.dataset_split_name = dataset_split_name
+    FLAGS.output_file = os.path.join(output_dir, 'feats.{}.{}'.format(dataset_split_name, FLAGS.inception_layer))
+    extract()
+
+def extract():
+
   tf.logging.set_verbosity(tf.logging.INFO)
   with tf.Graph().as_default():
     tf_global_step = slim.get_or_create_global_step()
@@ -279,22 +297,6 @@ def main(_):
     if FLAGS.model_name[:6]=='resnet' :
       logits = tf.squeeze(logits, [1, 2])
 
-#    if FLAGS.model_name[:6]=='inception_v4' :
-#        checkpoint_exclude_scopes=["InceptionV4/Logits", "InceptionV4/AuxLogits"]
-#
-#        exclusions = [scope.strip() for scope in checkpoint_exclude_scopes]
-#
-#        variables_to_restore = []
-#        for var in slim.get_model_variables():
-#            excluded = False
-#            for exclusion in exclusions:
-#                if var.op.name.startswith(exclusion):
-#                    excluded = True
-#                    break
-#            if not excluded:
-#                variables_to_restore.append(var)
-#                variables_to_restore = slim.get_variables_to_restore(exclude=["InceptionV4/Logits", "InceptionV4/AuxLogits"])
-#    else:
     variables_to_restore = slim.get_variables_to_restore()
 
     def tf_reduce_maxabs_axis_0(tensor) :
@@ -393,7 +395,7 @@ def main(_):
       closeP = '}'
       if FLAGS.add_scores_to_features == 'probs' :
         feature_size += num_classes
-        targets =[ tensor_id, label, features, probabilities, nada ]
+        targets =[ tensor_id, label, features, nada, probabilities ]
       elif FLAGS.add_scores_to_features == 'logits' :
         feature_size += num_classes
         targets =[ tensor_id, label, features, logits_out, nada ]
@@ -409,14 +411,14 @@ def main(_):
       else :
         pickle.dump([num_outputs, feature_size, FLAGS.__flags], outfile)
       # Features - outputs contents
-      def print_replica(image_id, label, feats) :
+      def print_replica(image_id, label, feats, pred) :
         if FLAGS.output_format=='text' :
           record  = [ image_id ] if FLAGS.id_field_name else  [ ]
           record += [ str(label) ]
           record += [ _PREDICTION_OUTPUT_FORMAT % feats[f]  for f in range(feature_size) ]
           print(', '.join(record), file=outfile)
         else :
-          pickle.dump([image_id, label, feats], outfile)
+          pickle.dump([image_id, label, feats, pred], outfile)
     else : # => FLAGS.extract_features==False
       if pooled_scores :
         list_ids         = []
@@ -455,12 +457,12 @@ def main(_):
 
       for s in range(num_samples) :
         print(openP, end='', file=sys.stderr)
-        next_id, next_lab, next_feats, next_scores, next_preds = sess.run(
-            targets, options=tf.RunOptions(timeout_in_ms=120000))
+        next_id, next_lab, next_feats, next_scores, next_preds = sess.run(targets, options=tf.RunOptions(timeout_in_ms=120000))
         next_id = next_id if FLAGS.id_field_name else ''
         if FLAGS.extract_features :
           if FLAGS.add_scores_to_features!='none' :
-            next_feats = np.concatenate((next_feats, next_scores), axis=0 if pooled_features else 1)
+            print_replica(next_id, next_lab, next_feats, next_preds)
+            # next_feats = np.concatenate((next_feats, next_scores), axis=0 if pooled_features else 1)
           if pooled_features :
             print_replica(next_id, next_lab, next_feats)
           else :

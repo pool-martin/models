@@ -67,4 +67,14 @@ len train = 208535
 len validation = 41010
 len test = 257252 
 steps epoch  = 208535 / batch = 4345
+tempo ~ 0.925 / step 
+tempo/epoca = 79 minutos
+
+
 s1_b:
+
+
+python eval_image_classifier.py  --base_dir=/Exp/2kporn/art/inception_v4/s1_a/finetune --dataset_dir=/DL/2kporn/tfrecords/s1_a --dataset_name=porn2k     --dataset_split_name=validation --model_name=inception_v4 --batch_size=10 --gpu_to_use=0 
+
+
+python predict_image_classifier.py --alsologtostderr base_dir=/Exp/2kporn/art/inception_v4/s1_a/finetune --checkpoint_path=/Exp/tensor_flow/1_s/running/checkpoints/initial_training --dataset_dir=/Exp/tensor_flow/1_s/dataset --task_name=label --dataset_name=porn2k --model_name=inception_v4 --preprocessing_name=porn2k --id_field_name=id --eval_replicas=1 --pool_features=none --pool_scores=none --extract_features --inception_layer=PreLogitsFlatten --add_scores_to_features=probs --output_format=pickle --normalize_per_image=1
