@@ -54,7 +54,7 @@ def extract(args, all_set):
 
     for class_type in class_types:
         for i in range(1, 1001):
-            video = 'v{}{}'.format(class_type, i.zfill(6))
+            video = 'v{}{}'.format(class_type, str(i).zfill(6))
             video_frames[video] = [frame for frame in all_set if video in frame]
 
     Parallel(n_jobs=10)(delayed(extractVideoFrames)(args, video, video_frames[video]) for video in video_frames.keys())
