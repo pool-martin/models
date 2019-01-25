@@ -184,7 +184,7 @@ def _convert_dataset(split_name, metadata, dataset_dir, output_path):
 #        class_id = class_names_to_ids[class_name]
         class_id = int(meta[1])
 
-        example = _image_to_tfexample(image_data, b'jpg', height, width, class_id, image_id)
+        example = _image_to_tfexample(image_data, b'jpg', height, width, class_id, image_id.encode())
         tfrecord_writer.write(example.SerializeToString())
 
       tfrecord_writer.close()
