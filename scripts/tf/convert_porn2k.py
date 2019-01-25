@@ -268,13 +268,13 @@ def run(mode, split_number, label_dir, dataset_dir, output_path, blacklist_file=
 
     # Saves classes and split sizes
     print('INFO: ', CLASSES_TO_SIZES, file=sys.stderr)
-    pickle.dump(CLASSES_TO_SIZES, open(os.path.join(dataset_dir, 'classes_to_sizes.pkl'), 'wb'))
+    pickle.dump(CLASSES_TO_SIZES, open(os.path.join(output_dir, 'classes_to_sizes.pkl'), 'wb'))
 
     SPLITS_TO_SIZES = { 'train'      : len(training),
                         'validation' : len(validation),
                         'test'       : len(test) }
     print('INFO: ', SPLITS_TO_SIZES,  file=sys.stderr)
-    pickle.dump(SPLITS_TO_SIZES,  open(os.path.join(dataset_dir, 'splits_to_sizes.pkl'),  'wb'))
+    pickle.dump(SPLITS_TO_SIZES,  open(os.path.join(output_dir, 'splits_to_sizes.pkl'),  'wb'))
 
     # Logs splits
     open(os.path.join(output_dir, 'train_set.log'), 'w').write('\n'.join([m[0] for m in training])+'\n')
