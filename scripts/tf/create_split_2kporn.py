@@ -120,6 +120,14 @@ def create_splits(args):
             for item in negative_network_validation_set:
                     f.write("%s" % item)
 
+    options = ['positive', 'negative']
+    for option in options:
+        from_file = os.path.join(args.dataset_dir, 'folds/{}_{}_test.txt'.format(args.split_number, option))
+        to_file   = os.path.join(args.output_path, args.split_number, '{}_test.txt'.format(option))
+        command = "cp {} {}".format(from_file, to_file)
+        print(command)
+        call(command, shell=True)
+
 def main():
     print('> Create splits from videos -', time.asctime( time.localtime(time.time())))
     args = load_args()
