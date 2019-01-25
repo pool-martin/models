@@ -104,7 +104,7 @@ def mainOpenCVMultiThread():
     path = '/DL/2kporn'
     videos_path = os.path.join(path, 'videos')
 
-    real_duration_path = '/Exp/2kporn/etf_frame_count_opencv'
+    real_duration_path = '/DL/2kporn/etf_frame_count_opencv'
     pathlib.Path(real_duration_path).mkdir(parents=True, exist_ok=True)
 
     videos = [f for f in os.listdir(videos_path) if isfile(join(videos_path, f))]
@@ -117,7 +117,7 @@ def mainOpenCV():
   path = '/DL/2kporn'
   videos_path = os.path.join(path, 'videos')
 
-  real_duration_path = '/Exp/2kporn/etf_frame_count_opencv'
+  real_duration_path = '/DL/2kporn/etf_frame_count_opencv'
   pathlib.Path(real_duration_path).mkdir(parents=True, exist_ok=True)
 
   videos = [f for f in os.listdir(videos_path) if isfile(join(videos_path, f))]
@@ -146,7 +146,7 @@ def mainSKVideoMultiThread():
     path = '/DL/2kporn'
     videos_path = os.path.join(path, 'videos')
 
-    real_duration_path = '/Exp/2kporn/etf_frame_count_skvideo'
+    real_duration_path = '/DL/2kporn/etf_frame_count_skvideo'
     pathlib.Path(real_duration_path).mkdir(parents=True, exist_ok=True)
 
     videos = [f for f in os.listdir(videos_path) if isfile(join(videos_path, f))]
@@ -157,7 +157,7 @@ def mainSKVideo():
   path = '/DL/2kporn'
   videos_path = os.path.join(path, 'videos')
 
-  real_duration_path = '/Exp/2kporn/etf_frame_count_skvideo'
+  real_duration_path = '/DL/2kporn/etf_frame_count_skvideo'
   pathlib.Path(real_duration_path).mkdir(parents=True, exist_ok=True)
 
   videos = [f for f in os.listdir(videos_path) if isfile(join(videos_path, f))]
