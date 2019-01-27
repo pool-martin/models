@@ -72,9 +72,28 @@ tempo/epoca = 79 minutos
 
 
 s1_b:
+len train = 217470
+len validation = 39261
+len test = 250062 
+steps epoch  = 217470 / batch = 4531
+epocas = 50
+total steps = 226531 
+tempo ~ 0.925 / step 
+tempo/epoca = 79 minutos
+
+s2_a
+len train = 219093
+len validation = 38109
+len test = 249611
+steps epoch  = 219093 / batch = 4565
+epocas = 50
+total steps = 228222
+tempo ~ 0.925 / step 
+tempo/epoca = 79 minutos
 
 
 python slim/eval_image_classifier.py  --base_dir=/Exp/2kporn/art/inception_v4/s1_a/finetune --dataset_dir=/DL/2kporn/tfrecords/s1_a --dataset_name=porn2k     --dataset_split_name=validation --model_name=inception_v4 --eval_image_size=224 --batch_size=10 --gpu_to_use=0 
 
 
-python slim/predict_image_classifier.py --alsologtostderr --base_dir=/Exp/2kporn/art/inception_v4/s1_a/imagenet_extract --checkpoint_path=/DL/initial_weigths/inception_v4/rgb_imagenet/model.ckpt --dataset_dir=/DL/2kporn/tfrecords/s1_a --task_name=label --dataset_name=porn2k --model_name=inception_v4 --preprocessing_name=porn2k --id_field_name=id --eval_replicas=1 --eval_image_size=224 --pool_features=none --pool_scores=none --extract_features --inception_layer=PreLogitsFlatten --checkpoint_exclude_scopes=InceptionV4/Logits,InceptionV4/AuxLogits --add_scores_to_features=probs --output_format=pickle --normalize_per_image=1 --batch_size=10 --gpu_to_use=1
+python slim/predict_image_classifier.py --alsologtostderr --base_dir=/Exp/2kporn/art/inception_v4/s1_a/imagenet_extract --checkpoint_path=/DL/initial_weigths/inception_v4/rgb_imagenet/model.ckpt --dataset_dir=/DL/2kporn/tfrecords/s1_a --task_name=label --dataset_name=porn2k --model_name=inception_v4 --preprocessing_name=porn2k --id_field_name=id --eval_replicas=1 --eval_image_size=224 --pool_features=none --pool_scores=none --extract_features --inception_layer=Mixed_7c --checkpoint_exclude_scopes=InceptionV4/Logits,InceptionV4/AuxLogits --add_scores_to_features=probs --output_format=pickle --normalize_per_image=1 --batch_size=160 --gpu_to_use=1
+
