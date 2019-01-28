@@ -135,6 +135,9 @@ else:
 #print('...', classifier_k.best_params_, end='', file=sys.stderr)
 
 start = su.print_and_time('====================\nWriting model...', past=start, file=sys.stderr)
+model_dir = os.path.dirname(FLAGS.output_model)
+if not os.path.exists(model_dir):
+    os.makedirs(model_dir)
 model_file = open(FLAGS.output_model, 'wb')
 pickle.dump(preprocessor, model_file)
 pickle.dump(classifier_m, model_file)
