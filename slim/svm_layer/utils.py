@@ -76,7 +76,7 @@ def new_classifier(randomForest=False, linear=False, dual=True, max_iter=10000, 
     elif linear :
         parameters = {
             'dual'         : [ dual ],
-            'C'            :  np.logspace(-2, 10, 13) #exp2var(loc=-16.0, scale=32.0),
+            'C'            : np.logspace(-2, 10, 13), #exp2var(loc=-16.0, scale=32.0),
             'multi_class'  : [ 'ovr' ], 
             'random_state' : [ 0 ], 
             'max_iter'     : [ max_iter ],
