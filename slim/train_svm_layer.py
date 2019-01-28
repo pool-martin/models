@@ -72,7 +72,7 @@ start = su.print_and_time('', past=start, file=sys.stderr)
 ids = np.append(ids_train, ids_val)
 labels = np.append(labels_train, labels_val)
 features = np.append(features_train, features_val)
-
+print('ids', ids.shape, 'labels', labels.shape, 'features', features.shape)
 num_samples = len(ids)
 min_gamma   = np.floor(np.log2(1.0/num_samples)) - 4.0
 max_gamma   = min(3.0, min_gamma+32.0)
