@@ -76,7 +76,7 @@ def new_classifier(randomForest=False, linear=False, dual=True, max_iter=10000, 
     elif linear :
         parameters = {
             'dual'         : [ dual ],
-            'C'            : exp2var(loc=-16.0, scale=32.0),
+            'C'            :  np.logspace(-2, 10, 13) #exp2var(loc=-16.0, scale=32.0),
             'multi_class'  : [ 'ovr' ], 
             'random_state' : [ 0 ], 
             'max_iter'     : [ max_iter ],
@@ -96,5 +96,6 @@ def new_classifier(randomForest=False, linear=False, dual=True, max_iter=10000, 
 def hyperoptimizer(classifier, parameters, scoring='roc_auc', max_iter=10, n_jobs=1, group=True) :
     return sk.model_selection.RandomizedSearchCV(classifier, parameters, 
         n_iter=max_iter, scoring=scoring, fit_params=None, n_jobs=n_jobs, iid=True, refit=True, 
-        cv=sk.model_selection.GroupKFold(n_splits=3) if group else None, 
+        cv=3,
+#        cv=sk.model_selection.GroupKFold(n_splits=3) if group else None, 
         verbose=2, random_state=0)
