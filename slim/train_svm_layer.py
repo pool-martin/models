@@ -69,9 +69,9 @@ first = start = su.print_and_time('Reading training data...', file=sys.stderr)
 ids_train, labels_train, features_train = su.read_pickled_data(os.path.join(FLAGS.input_training, 'feats.train'))
 ids_val, labels_val, features_val = su.read_pickled_data(os.path.join(FLAGS.input_training, 'feats.validation'))
 start = su.print_and_time('', past=start, file=sys.stderr)
-ids = ids_train + ids_val
-labels = labels_train + labels_val
-features = features_train + features_val
+ids = np.append(ids_train, ids_val)
+labels = np.append(labels_train, labels_val)
+features = np.append(features_train, features_val)
 
 num_samples = len(ids)
 min_gamma   = np.floor(np.log2(1.0/num_samples)) - 4.0
