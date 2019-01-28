@@ -67,6 +67,7 @@ len train = 208535
 len validation = 41010
 len test = 257252 
 steps epoch  = 208535 / batch = 4345
+total steps = 217250
 tempo ~ 0.925 / step 
 tempo/epoca = 79 minutos
 
@@ -90,6 +91,33 @@ epocas = 50
 total steps = 228222
 tempo ~ 0.925 / step 
 tempo/epoca = 79 minutos
+
+
+s2_b
+len train = 213528
+len validation = 35546
+len test = 257703
+steps epoch  = 213528 / batch = 4449
+epocas = 50
+total steps = v4: 222425 v1: 71176
+tempo ~ 0.925 / step 
+tempo/epoca = 79 minutos
+ 
+s3_a
+len train = 219381
+len validation = 37613
+len test = 249785
+steps epoch  = 219381 / batch = 4570
+epocas = 50
+total steps = v4: 228521 v1: 73127
+
+s3_b
+len train = 212538
+len validation = 36744
+len test = 257529
+steps epoch  = 212538 / batch = 4428
+epocas = 50
+total steps = v4: 221394 v1: 70846
 
 
 python slim/eval_image_classifier.py  --base_dir=/Exp/2kporn/art/inception_v4/s1_a/finetune --dataset_dir=/DL/2kporn/tfrecords/s1_a --dataset_name=porn2k     --dataset_split_name=validation --model_name=inception_v4 --eval_image_size=224 --batch_size=10 --gpu_to_use=0 

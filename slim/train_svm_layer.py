@@ -30,6 +30,7 @@ import sklearn.decomposition
 import sklearn.gaussian_process
 import sklearn.model_selection
 import sklearn.preprocessing
+from sklearn.model_selection import GridSearchCV
 
 from svm_layer import utils as su
 
@@ -45,6 +46,7 @@ parser.add_argument('--preprocess', type=str, default='PCA', help='train and app
 parser.add_argument('--input_training', type=str, required=True, help='input file with the training data, in pickle format.')
 parser.add_argument('--output_model', type=str, required=True, help='output file to receive the model, in pickle format.')
 parser.add_argument('--no_group', default=False, action='store_true', help='do not group samples using id when cross-validating.')
+parser.add_argument('--new_classifier', default=False, action='store_true', help='Use new classifier.')
 FLAGS = parser.parse_args()
 
 valid_svm_methods = [ 'RBF', 'LINEAR_DUAL', 'LINEAR_PRIMAL' ]
@@ -64,9 +66,12 @@ if not FLAGS.preprocess in valid_preprocesses :
     sys.exit(1)
 
 first = start = su.print_and_time('Reading training data...', file=sys.stderr)
-ids, labels, features = su.read_pickled_data(FLAGS.input_training)
+ids_train, labels_train, features_train = su.read_pickled_data(os.path.join(FLAGS.input_training, 'feats.train'))
+ids_val, labels_val, features_val = su.read_pickled_data(os.path.join(FLAGS.input_training, 'feats.validation'))
 start = su.print_and_time('', past=start, file=sys.stderr)
-
+ids = ids_train + ids_val
+labels = labels_train + labels_val
+features = features_train + features_val
 
 num_samples = len(ids)
 min_gamma   = np.floor(np.log2(1.0/num_samples)) - 4.0
@@ -103,13 +108,21 @@ classifier, tuning = su.new_classifier(linear=SVM_LINEAR, dual=SVM_DUAL, max_ite
 print('params :', classifier.get_params().keys(), file=sys.stderr)
 #sys.exit(1)
 if not FLAGS.random_forest:
-    classifier_m = su.hyperoptimizer(classifier, tuning, max_iter=HYPER_MAX_ITER, n_jobs=HYPER_JOBS, group=not FLAGS.no_group)
-    #print('Labels: ', labels, end='', file=sys.stderr)
-    #print('LabelsShape: ', labels.shape, end='', file=sys.stderr)
-    #sys.exit(1)
-    classifier_m.fit(features, (labels==1.).astype(np.int), groups=None if FLAGS.no_group else ids)
-    print('Best params:', classifier_m.best_params_, file=sys.stderr)
-    print('...', classifier_m.best_params_, end='', file=sys.stderr)
+    if FLAGS.new_classifier:
+        C_range = np.logspace(-2, 10, 13)
+        params = {'C':C_range}
+        classifier_m = GridSearchCV(sk.svm.SVC(probability=True,kernel='linear'), param_grid=params, n_jobs=5, cv=5, verbose=1)
+        classifier_m.fit(features, (labels==1.).astype(np.int))
+        print('Best params:', classifier_m.best_params_, file=sys.stderr)
+        print('...', classifier_m.best_params_, end='', file=sys.stderr)
+    else:
+        classifier_m = su.hyperoptimizer(classifier, tuning, max_iter=HYPER_MAX_ITER, n_jobs=HYPER_JOBS, group=not FLAGS.no_group)
+        #print('Labels: ', labels, end='', file=sys.stderr)
+        #print('LabelsShape: ', labels.shape, end='', file=sys.stderr)
+        #sys.exit(1)
+        classifier_m.fit(features, (labels==1.).astype(np.int), groups=None if FLAGS.no_group else ids)
+        print('Best params:', classifier_m.best_params_, file=sys.stderr)
+        print('...', classifier_m.best_params_, end='', file=sys.stderr)
 else:
     classifier_m = classifier
     classifier_m.fit(features, (labels==1.).astype(np.int))
