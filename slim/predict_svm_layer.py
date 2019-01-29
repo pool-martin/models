@@ -32,7 +32,7 @@ import sklearn.preprocessing
 
 from svm_layer import utils as su
 
-os.environ['JOBLIB_TEMP_FOLDER'] = "/data/tmp"
+os.environ['JOBLIB_TEMP_FOLDER'] = "~/tmp"
 
 def read_pmsvm_data(input_training):
     ids =[]
@@ -127,6 +127,9 @@ confidence_scores_m = classifier_m.decision_function(features)
 predictions_m = probability_from_logits(confidence_scores_m)
 #predictions_k = probability_from_logits(confidence_scores_k)
 
+output_dir = os.path.dirname(FLAGS.output_predictions)
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
 
 outfile = open(FLAGS.output_predictions, 'w') if FLAGS.output_predictions else sys.stdout
 if FLAGS.pool_by_id=='none' :
