@@ -125,3 +125,10 @@ python slim/eval_image_classifier.py  --base_dir=/Exp/2kporn/art/inception_v4/s1
 
 python slim/predict_image_classifier.py --alsologtostderr --base_dir=/Exp/2kporn/art/inception_v4/s1_a/imagenet_extract --checkpoint_path=/DL/initial_weigths/inception_v4/rgb_imagenet/model.ckpt --dataset_dir=/DL/2kporn/tfrecords/s1_a --task_name=label --dataset_name=porn2k --model_name=inception_v4 --preprocessing_name=porn2k --id_field_name=id --eval_replicas=1 --eval_image_size=224 --pool_features=none --pool_scores=none --extract_features --inception_layer=Mixed_7c --checkpoint_exclude_scopes=InceptionV4/Logits,InceptionV4/AuxLogits --add_scores_to_features=probs --output_format=pickle --normalize_per_image=1 --batch_size=160 --gpu_to_use=1
 
+
+python slim/train_svm_layer.py --input_training /Exp/2kporn/art/inception_v1/s2_b/imagenet_extract/svm.features --output_model /Exp/2kporn/art/inception_v1/s2_b/imagenet_extract/svm.models/svm.model --jobs 5 --svm_method LINEAR_DUAL --preprocess NONE --max_iter_hyper 13
+
+
+python slim/predict_svm_layer.py --input_model /Exp/2kporn/art/inception_v4/s1_a/imagenet_extract/svm.models/svm.model --input_test /Exp/2kporn/art/inception_v4/s1_a/imagenet_extract/svm.features/feats.test --pool_by_id none  --output_predictions /Exp/2kporn/art/inception_v4/s1_a/imagenet_extract/svm.predictions/test.prediction.txt --output_metrics /Exp/2kporn/art/inception_v4/s1_a/imagenet_extract/svm.predictions/test.metrics.txt --output_images /Exp/2kporn/art/inception_v4/s1_a/imagenet_extract/svm.predictions/test.images --compute_rolling_window
+
+python scripts/results_2_etf.py --output_predictions /Exp/2kporn/art/inception_v4/s2_a/imagenet_extract/svm.predictions/test.prediction.txt --output_path /Exp/2kporn/art/inception_v4/s2_a/imagenet_extract/etf --fps_sampled 1 --set_to_process test --column k_prob_g5

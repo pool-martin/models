@@ -88,8 +88,8 @@ def result_2_etf(df, is_3d, fps_sampled, result_row, FLAGS):
 		
 def concat_files(FLAGS, folds_dir, etf_dir, output_path):
 	if 'test' == FLAGS.set_to_process:
-		positive_set_name = os.path.join(folds_dir, '%s_positive_test.txt' % FLAGS.fold_to_process)
-		negative_set_name = os.path.join(folds_dir, '%s_negative_test.txt' % FLAGS.fold_to_process)
+		positive_set_name = os.path.join(folds_dir, FLAGS.fold_to_process, 'positive_test.txt')
+		negative_set_name = os.path.join(folds_dir, FLAGS.fold_to_process, 'negative_test.txt')
 	else:
 		positive_set_name = os.path.join(folds_dir, FLAGS.fold_to_process, 'positive_%s_set.txt' % FLAGS.set_to_process)
 		negative_set_name = os.path.join(folds_dir, FLAGS.fold_to_process, 'negative_%s_set.txt' % FLAGS.set_to_process)
@@ -149,8 +149,8 @@ def main():
     for _, group_df in groups:
         result_2_etf(group_df, FLAGS.is_3d, FLAGS.fps_sampled, FLAGS.column, FLAGS)
 
-    concat_files(FLAGS, '/DL/2kporn/folds', '/DL/2kporn/etf', os.path.join(output_dir, 'ground_truth'))
-    concat_files(FLAGS, '/DL/2kporn/folds', output_dir, output_dir)
+    concat_files(FLAGS, '/DL/2kporn/folds_art', '/DL/2kporn/etf', os.path.join(output_dir, 'ground_truth'))
+    concat_files(FLAGS, '/DL/2kporn/folds_art', output_dir, output_dir)
 
 if __name__ == '__main__':
 	main()
