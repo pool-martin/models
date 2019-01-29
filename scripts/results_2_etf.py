@@ -68,9 +68,13 @@ def result_2_etf(df, is_3d, fps_sampled, result_row, FLAGS):
 			for i in range(int(beg), int(end)+1):
 				localization_flag[i] = row[result_row]
 		else:
-			video, frame, f_fps, gt_label  = row['Frame'].split('.')
-			beg = (int(frame)- 1) * fps + 1
-			end = beg + int(fps)
+			if row['Frame'].count('_') == 2:
+				video, gt_label, beg = row['Frame'].split('_')
+				end = int(beg) + FLAGS.sample_width * fps
+			else:
+				video, frame, f_fps, gt_label  = row['Frame'].split('.')
+				beg = (int(frame)- 1) * fps + 1
+				end = beg + int(fps)
 			for i in range(int(beg), int(end)+1):
 				if i > length:
 					break
