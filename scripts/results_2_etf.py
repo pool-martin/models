@@ -7,12 +7,12 @@ import os
 def mount_result_etf(video_name, localization_flag, fps):
 	#Let try to identify blocks of '0' or '1' and create a list of something like:
 	# video_name #start_frame #number_of_frames #class
-	current_snippet_class = localization_flag[1]
+	current_snippet_class = localization_flag[0]
 	classes_snippets = []
 	current_frame_qty = 1
 #	current_snippet_qty = 1
 	current_snippet_initial_position = 0  #0 based
-	for i in range (2, len(localization_flag)+1):
+	for i in range (1, len(localization_flag)):
 		if localization_flag[i] == current_snippet_class:
 			current_frame_qty = current_frame_qty + 1
 		else:
@@ -49,7 +49,7 @@ def result_2_etf(df, is_3d, fps_sampled, result_row, FLAGS):
 		result_etf = os.path.join(output_dir, video_name + ".etf")
 		
 		video_fps = os.path.join('/DL/2kporn', "video_fps", video_name + ".etf")
-		video_length = os.path.join('/DL/2kporn', 'number_of_frames_video', video_name + ".etf")
+		video_length = os.path.join('/DL/2kporn', 'etf_frame_count_opencv', video_name + ".etf")
 		#print(video_fps)
 
 		with open(video_fps, "r") as f:
@@ -60,7 +60,11 @@ def result_2_etf(df, is_3d, fps_sampled, result_row, FLAGS):
 
 		#Calc Localization flag:
 		if is_3d:
-			_, beg, end = row['Frame'].split('_')
+			if row['Frame'].count('_') == 2:
+				_, beg, end = row['Frame'].split('_')
+			else:
+				_, beg = row['Frame'].split('_')
+				end = int(beg) + FLAGS.sample_width * fps
 			for i in range(int(beg), int(end)+1):
 				localization_flag[i] = row[result_row]
 		else:
@@ -95,8 +99,11 @@ def concat_files(FLAGS, folds_dir, etf_dir, output_path):
 	all_txt = ''
 	for video_name in video_set:
 		video_etf_path = os.path.join(etf_dir, video_name.rstrip('\n') + ".etf")
-		with open(video_etf_path, 'r') as f:
-			all_txt += f.read()
+		if(os.path.isfile(video_etf_path)):
+			with open(video_etf_path, 'r') as f:
+				all_txt += f.read()
+		else:
+			print('{} not found'.format(video_etf_path))
 
 	if not os.path.isdir(output_path):
 		os.makedirs(output_path) 
@@ -114,6 +121,7 @@ def main():
     parser.add_argument('--set_to_process', type=str, default='svm_validation', help='Wich set should be processed for example svm_validation, test')
     parser.add_argument('--fold_to_process', type=str, default='s1', help='Wich fold should be processed for example s1, s2, ...')
     parser.add_argument('--column', type=str, default='k_prob_t5', help='Wich column to extract results, k_prob_t5, k_prob_t3, k_pred_t5, ...')
+    parser.add_argument('--sample_width', type=int, default=1, help='How much time (seconds) the sample cover, ...')
 
     FLAGS = parser.parse_args()
 
