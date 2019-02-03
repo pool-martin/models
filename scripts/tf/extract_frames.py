@@ -41,8 +41,19 @@ def file_exists(args, video, frame_identifier):
 
 def extractVideoFrames(args, video, video_frames):
 
-    frames_to_extract = [frame for frame in video_frames if not file_exists(args, video, frame)]
+    # frames_to_extract = [frame for frame in video_frames if not file_exists(args, video, frame)]
+    frames_to_extract = []
+    for identifier in video_frames:
+        s_identifier = identifier.split('_')
+        frames_path = os.path.join(args.split_path, args.split_number, '3D', '1_fps', 'opencv', 'w_1_l_30', video, '{}.txt'.format(identifier))
+        content = []
+        with open(frames_path, 'r') as f:
+            content = f.readlines()
+        content = [x.strip() for x in content]
 
+        frames_to_extract.extend(['{}_{}_{}'.format(s_identifier[0], s_identifier[1], x) for x in content])
+
+    frames_to_extract = [frame for frame in frames_to_extract if not file_exists(args, video, frame)]
     video_path = os.path.join(args.dataset_dir, 'videos', '{}.mp4'.format(video))
     opencv.extract_video_frames(video, video_path, args.output_path, frames_to_extract)
 
@@ -64,7 +75,7 @@ def extract(args, all_set):
 def main():
     args = load_args()
 
-    splits_dir_path = os.path.join(args.split_path, args.split_number, '2D', '1_fps', 'opencv')
+    splits_dir_path = os.path.join(args.split_path, args.split_number, '3D', '1_fps', 'opencv')
 
     network_training_set_path = os.path.join(splits_dir_path, 'network_training_set.txt')
     network_validation_set_path = os.path.join(splits_dir_path, 'network_validation_set.txt')
