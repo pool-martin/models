@@ -25,9 +25,9 @@ def main():
         column = getattr(row, FLAGS.column)
         video = getattr(row, 'videos')
         if int(truth_label) == 0:
-            error_type = 'fn'
-        else:
             error_type = 'fp'
+        else:
+            error_type = 'fn'
         if int(truth_label) != int(column):
             print(identifier, truth_label, column, error_type)
             origin_path = os.path.join('/DL/2kporn/frames', video, '{}.jpg'.format(identifier))
@@ -36,8 +36,8 @@ def main():
                 os.makedirs(dest_path)
 
             command = "cp {} {}".format(origin_path, dest_path)
-            print('\n', command)
-            # call(command, shell=True)
+            # print('\n', command)
+            call(command, shell=True)
 
 
 if __name__ == '__main__':
