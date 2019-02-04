@@ -22,7 +22,7 @@ def main():
     for row in df.itertuples(index=True, name='Pandas'):
         truth_label = getattr(row, "previous_labels")
         identifier = getattr(row, "Frame")
-        column = getattr(row, FLAGS.column)[0]
+        column = getattr(row, FLAGS.column)
         video = getattr(row, 'videos')
         if int(truth_label) == 0:
             error_type = 'fn'
@@ -37,7 +37,7 @@ def main():
 
             command = "cp {} {}".format(origin_path, dest_path)
             print('\n', command)
-            call(command, shell=True)
+            # call(command, shell=True)
 
 
 if __name__ == '__main__':
