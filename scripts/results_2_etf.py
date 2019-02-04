@@ -67,11 +67,11 @@ def result_2_etf(df, is_3d, fps_sampled, result_row, FLAGS):
 				end = int(beg) + FLAGS.sample_width * fps
 			for i in range(int(beg), int(end)+1):
 				flag = row[result_row]
-				if (result_row == 'predictions'):
-					if row[result_row] == -1:
-						flag = False
-					else:
+				if (result_row == 'prob_porn_2'):
+					if row[result_row] >= 0:
 						flag = True
+					else:
+						flag = False
 
 				localization_flag[i] = flag
 		else:
@@ -85,7 +85,14 @@ def result_2_etf(df, is_3d, fps_sampled, result_row, FLAGS):
 			for i in range(int(beg), int(end)+1):
 				if i > length:
 					break
-				localization_flag[i] = row[result_row]
+				flag = row[result_row]
+				if (result_row == 'prob_porn_2'):
+					if row[result_row] >= 0:
+						flag = True
+					else:
+						flag = False
+
+				localization_flag[i] = flag
 
 	str_result_etf = mount_result_etf(video_name, localization_flag, fps)
 	with open(result_etf, "w") as f:
