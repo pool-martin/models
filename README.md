@@ -136,3 +136,8 @@ python scripts/results_2_etf.py --output_predictions /Exp/2kporn/art/inception_v
 
 
 rsync -Cravzp --bwlimit=10000 jp@dl-11:/work/jp/Exp/2kporn/art/inception_v1/s3_b/imagenet_extract/etf s3_b/imagenet_extract/
+
+rsync -chavzP jp@dl-01:/work/jp/models .
+
+
+python scripts/tf/collect_errors.py --output_predictions /Exp/2kporn/art/inception_v4/s1_a/finetune/svm.predictions/test.prediction.txt --output_path /Exp/2kporn/art/inception_v4/s1_a/finetune/error_examples --fold_to_process s1_a

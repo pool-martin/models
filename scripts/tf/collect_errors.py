@@ -6,20 +6,15 @@ import pickle
 import sys
 import os
 import pandas as pd
-
+from subprocess import call
 
 def main():
     parser = argparse.ArgumentParser(prog='collect_errors.py', description='create etfs based on results.')
     parser.add_argument('--output_predictions', type=str , help='input file with the test data, in isbi challenge format (default=stdout).')
-    parser.add_argument('--output_path', type=str, default='/Exp/2kporn/art/inception_v4/finetune/error_examples' , help='folder to save the etf files.')
+    parser.add_argument('--output_path', type=str, default='/Exp/2kporn/art/inception_v4/s1_a/finetune/error_examples' , help='folder to save the etf files.')
     parser.add_argument('--fold_to_process', type=str, default='s1_a', help='Wich fold should be processed for example s1, s2, ...')
     parser.add_argument('--column', type=str, default='k_prob_g5', help='Wich column to extract results, k_prob_t5, k_prob_t3, k_pred_t5, ...')
     FLAGS = parser.parse_args()
-
-    output_dir = os.path.join(FLAGS.output_path, FLAGS.set_to_process)
-
-    if not os.path.isdir(output_dir):
-        os.makedirs(output_dir) 
 
     df = pd.read_csv(FLAGS.output_predictions+".k_test")
     df = df.sort_values(by='Frame')
