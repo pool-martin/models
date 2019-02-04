@@ -66,7 +66,14 @@ def result_2_etf(df, is_3d, fps_sampled, result_row, FLAGS):
 				_, beg = row['Frame'].split('_')
 				end = int(beg) + FLAGS.sample_width * fps
 			for i in range(int(beg), int(end)+1):
-				localization_flag[i] = row[result_row]
+				flag = row[result_row]
+				if (result_row == 'predictions'):
+					if row[result_row] == -1:
+						flag = False
+					else:
+						flag = True
+
+				localization_flag[i] = flag
 		else:
 			if row['Frame'].count('_') == 2:
 				video, gt_label, beg = row['Frame'].split('_')

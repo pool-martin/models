@@ -133,7 +133,7 @@ python slim/predict_svm_layer.py --input_model /Exp/2kporn/art/inception_v4/s1_b
 
 python scripts/results_2_etf.py --output_predictions /Exp/2kporn/art/inception_v4/s1_b/finetune/svm.predictions/test.prediction.txt --output_path /Exp/2kporn/art/inception_v4/s1_b/finetune/etf --fps_sampled 1 --set_to_process test --column k_prob_g5 --fold_to_process s1_b
 
-
+python etf_analyze.py /Exp/2kporn/art/inception_v4/s1_a/finetune/etf/test/ground_truth/all.txt /Exp/2kporn/art/inception_v4/s1_a/finetune/etf/test/etf_list.txt
 
 rsync -Cravzp --bwlimit=10000 jp@dl-11:/work/jp/Exp/2kporn/art/inception_v1/s3_b/imagenet_extract/etf s3_b/imagenet_extract/
 
