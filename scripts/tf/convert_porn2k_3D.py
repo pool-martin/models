@@ -191,9 +191,8 @@ def load_fragment(splits_dir, dataset_dir, split_number, video_name, meta):
         image_file = os.path.join(dataset_dir, video_name, frame)
         image_data = tf.gfile.FastGFile(image_file, 'rb').read()
         image_frames.append(image_data)
-      height, width = image_reader.read_image_dims(image_frames[0], image_data)
 
-      return height, width, image_frames
+      return image_frames
 
 
 def _convert_dataset(split_name, metadata, dataset_dir, output_path, splits_dir, split_number):
@@ -235,14 +234,14 @@ def _convert_dataset(split_name, metadata, dataset_dir, output_path, splits_dir,
         # Read the filename:
         meta = next(metadata)
         video_name = meta[0]
-        height, width, image_data = load_fragment(splits_dir, dataset_dir, split_number, video_name, meta)
+        image_data = load_fragment(splits_dir, dataset_dir, split_number, video_name, meta)
 
         image_id = '{}_{}_{}'.format(meta[0], meta[1], meta[2])
 #         image_name = '{}.jpg'.format(image_id)
 #         image_file = os.path.join(dataset_dir, video_name, image_name)
 # #        print('INFO: image_id', image_id,  file=sys.stderr) 
 #         image_data = tf.gfile.FastGFile(image_file, 'rb').read()
-#         height, width = image_reader.read_image_dims(session, image_data)
+        height, width = image_reader.read_image_dims(session, image_data[0])
 
 #        class_name = os.path.basename(os.path.dirname(filenames[i]))
 #        class_id = class_names_to_ids[class_name]
