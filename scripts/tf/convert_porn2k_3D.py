@@ -179,7 +179,7 @@ def load_fragment(splits_dir, dataset_dir, split_number, video_name, meta):
       image_name = '{}.jpg'.format(image_id)
       image_file = os.path.join(dataset_dir, video_name, image_name)
 
-      fragment_file = os.path.join(splits_dir, split_number, '3D', '1_fps', 'opencv', 'w_1_l_30', video_name, '{}.txt'.format(image_id))
+      fragment_file = os.path.join(splits_dir, 'w_1_l_30', video_name, '{}.txt'.format(image_id))
 
       with open(fragment_file) as f:
         content = f.read().splitlines()
