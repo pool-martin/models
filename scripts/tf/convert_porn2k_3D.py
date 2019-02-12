@@ -38,6 +38,7 @@ import tensorflow as tf
 
 import argparse, os, time, random, math
 from subprocess import call
+from multiprocessing import Pool
 
 def load_args():
     ap = argparse.ArgumentParser(description='Create tfrecord to be used in 2D or 3D CNN models.')
@@ -172,25 +173,28 @@ def _get_dataset_filename(output_path, split_name, shard_id, num_shards):
       split_name, shard_id+1, num_shards)
   return os.path.join(output_path, output_filename)
 
+def open_file(image_file):
+  return tf.gfile.FastGFile(image_file, 'rb').read()
+  
 def load_fragment(splits_dir, dataset_dir, split_number, video_name, meta):
       # /Exp/2kporn/splits/3D/s1_a/3D/1_fps/opencv/w_1_l_30/vPorn000999/vPorn000999_0_6575.txt
-      image_reader = ImageReader()
       image_id = '{}_{}_{}'.format(meta[0], meta[1], meta[2])
-      image_name = '{}.jpg'.format(image_id)
-      image_file = os.path.join(dataset_dir, video_name, image_name)
 
       fragment_file = os.path.join(splits_dir, 'w_1_l_30', video_name, '{}.txt'.format(image_id))
 
       with open(fragment_file) as f:
         content = f.read().splitlines()
 
-      frames = ['{}_{}_{}.jpg'.format(meta[0], meta[1], x) for x in content]
+      frames = [os.path.join(dataset_dir, video_name, '{}_{}_{}.jpg'.format(meta[0], meta[1], x)) for x in content]
 
       image_frames = []
-      for frame in frames:
-        image_file = os.path.join(dataset_dir, video_name, frame)
-        image_data = tf.gfile.FastGFile(image_file, 'rb').read()
-        image_frames.append(image_data)
+
+      with Pool(processes=15) as pool:
+        image_frames = pool.map(open_file, frames)
+      # for frame in frames:
+      #   image_file = os.path.join(dataset_dir, video_name, frame)
+      #   image_data = tf.gfile.FastGFile(image_file, 'rb').read()
+      #   image_frames.append(image_data)
 
       return image_frames
 
