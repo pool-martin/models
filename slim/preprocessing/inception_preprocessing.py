@@ -201,28 +201,31 @@ def preprocess_for_train(image, height, width, bbox,
     3-D float Tensor of distorted image used for training with range [-1, 1].
   """
   with tf.name_scope(scope, 'distort_image', [image, height, width, bbox]):
-    if region == 1:
-      height_0 = 0.0
-      height_1 = 0.5
-      width_0 = 0.0
-      width_1 = 0.5
-    elif region == 2:
-      height_0 = 0.0
-      height_1 = 0.5
-      width_0 = 0.5
-      width_1 = 1.0
-    elif region == 3:
-      height_0 = 0.5
-      height_1 = 1.0
-      width_0 = 0.0
-      width_1 = 0.5
-    elif region == 4:
-      height_0 = 0.5
-      height_1 = 1.0
-      width_0 = 0.5
-      width_1 = 1.0
+    if region in [1,2,3,4]:
+      if region == 1:
+        height_0 = 0.0
+        height_1 = 0.5
+        width_0 = 0.0
+        width_1 = 0.5
+      elif region == 2:
+        height_0 = 0.0
+        height_1 = 0.5
+        width_0 = 0.5
+        width_1 = 1.0
+      elif region == 3:
+        height_0 = 0.5
+        height_1 = 1.0
+        width_0 = 0.0
+        width_1 = 0.5
+      elif region == 4:
+        height_0 = 0.5
+        height_1 = 1.0
+        width_0 = 0.5
+        width_1 = 1.0
 
-    image = tf.image.crop_and_resize(image, [height_0, width_0, height_1, width_1], [0], [height,width])
+      image = tf.expand_dims(image, 0)
+      image = tf.image.crop_and_resize(image, [height_0, width_0, height_1, width_1], [0], [height,width])
+      image = tf.squeeze(image, [0])
 
     if bbox is None:
       bbox = tf.constant([0.0, 0.0, 1.0, 1.0],
@@ -310,6 +313,14 @@ def preprocess_for_eval(image, height, width,
     if region == 0:
       if central_fraction:
         image = tf.image.central_crop(image, central_fraction=central_fraction)
+
+      if height and width:
+        # Resize the image to the specified height and width.
+        image = tf.expand_dims(image, 0)
+        image = tf.image.resize_bilinear(image, [height, width],
+                                        align_corners=False)
+        image = tf.squeeze(image, [0])
+
     else:
       if region == 1:
         height_0 = 0.0
@@ -332,14 +343,10 @@ def preprocess_for_eval(image, height, width,
         width_0 = 0.5
         width_1 = 1.0
 
-      image = tf.image.crop_and_resize(image, [height_0, width_0, height_1, width_1], [0], [height,width])
-
-    if height and width:
-      # Resize the image to the specified height and width.
       image = tf.expand_dims(image, 0)
-      image = tf.image.resize_bilinear(image, [height, width],
-                                       align_corners=False)
+      image = tf.image.crop_and_resize(image, [height_0, width_0, height_1, width_1], [0], [height,width])
       image = tf.squeeze(image, [0])
+
     image = apply_image_normalization(image, normalize_per_image)
 #    image = tf.subtract(image, 0.5)
 #    image = tf.multiply(image, 2.0)
