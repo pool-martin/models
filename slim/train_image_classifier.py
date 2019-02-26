@@ -505,7 +505,7 @@ def main(_):
 
       image = image_preprocessing_fn(image, train_image_size, train_image_size,
         add_rotations=FLAGS.add_rotations,
-        normalize_per_image=FLAGS.normalize_per_image, FLAGS.image_region)
+        normalize_per_image=FLAGS.normalize_per_image, region=FLAGS.image_region)
 
 
       images, labels = tf.train.batch(
