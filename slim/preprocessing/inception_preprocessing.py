@@ -224,7 +224,8 @@ def preprocess_for_train(image, height, width, bbox,
         width_1 = 1.0
 
       image = tf.expand_dims(image, 0)
-      image = tf.image.crop_and_resize(image, [height_0, width_0, height_1, width_1], [0], [height,width])
+      boxes = tf.Variable([[height_0, width_0, height_1, width_1]])
+      image = tf.image.crop_and_resize(image, boxes, [0], [height,width])
       image = tf.squeeze(image, [0])
 
     if bbox is None:
@@ -344,7 +345,8 @@ def preprocess_for_eval(image, height, width,
         width_1 = 1.0
 
       image = tf.expand_dims(image, 0)
-      image = tf.image.crop_and_resize(image, [height_0, width_0, height_1, width_1], [0], [height,width])
+      boxes = tf.Variable([[height_0, width_0, height_1, width_1]])
+      image = tf.image.crop_and_resize(image, boxes, [0], [height,width])
       image = tf.squeeze(image, [0])
 
     image = apply_image_normalization(image, normalize_per_image)
