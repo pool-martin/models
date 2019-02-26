@@ -239,6 +239,10 @@ tf.app.flags.DEFINE_bool(
 tf.app.flags.DEFINE_integer(
     'normalize_per_image', 0, 'Normalization per image: 0 (None), 1 (Mean), 2 (Mean and Stddev)')
 
+tf.app.flags.DEFINE_integer(
+    'image_region', 0, 'Region of the image 0 = Top letf, 1 = Top Right, 2 = Bottom left, 3 = Bottom right')
+    
+
 tf.app.flags.DEFINE_string(
     'experiment_tag', '', 'Internal tag for experiment')
 
@@ -501,7 +505,7 @@ def main(_):
 
       image = image_preprocessing_fn(image, train_image_size, train_image_size,
         add_rotations=FLAGS.add_rotations,
-        normalize_per_image=FLAGS.normalize_per_image)
+        normalize_per_image=FLAGS.normalize_per_image, FLAGS.image_region)
 
 
       images, labels = tf.train.batch(
