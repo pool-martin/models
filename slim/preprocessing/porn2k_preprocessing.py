@@ -169,7 +169,6 @@ def apply_image_normalization(image, normalize_per_image=0) :
     else :
       raise ValueError('invalid value for normalize_per_image: %d' % normalize_per_image)
 
-
 def preprocess_for_train(image, height, width, bbox,
                          fast_mode=True,
                          aspect_ratio_range=(0.75, 1.33),
