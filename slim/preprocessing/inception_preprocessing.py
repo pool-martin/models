@@ -277,6 +277,14 @@ def preprocess_for_train(image, height, width, bbox,
       boxes = tf.Variable([[height_0, width_0, height_1, width_1]])
       distorted_image = tf.image.crop_and_resize(distorted_image, boxes, [0], [height,width])
       distorted_image = tf.squeeze(distorted_image, [0])
+    if region == 5:
+      distorted_image = tf.image.central_crop(distorted_image, central_fraction=0.50)
+
+      # Resize the image to the specified height and width.
+      distorted_image = tf.expand_dims(distorted_image, 0)
+      distorted_image = tf.image.resize_bilinear(distorted_image, [height, width], align_corners=False)
+      distorted_image = tf.squeeze(distorted_image, [0])
+
 
     return distorted_image
 
@@ -351,6 +359,13 @@ def preprocess_for_eval(image, height, width,
       image = tf.expand_dims(image, 0)
       boxes = tf.Variable([[height_0, width_0, height_1, width_1]])
       image = tf.image.crop_and_resize(image, boxes, [0], [height,width])
+      image = tf.squeeze(image, [0])
+    if region == 5:
+      image = tf.image.central_crop(image, central_fraction=0.50)
+
+      # Resize the image to the specified height and width.
+      image = tf.expand_dims(image, 0)
+      image = tf.image.resize_bilinear(image, [height, width], align_corners=False)
       image = tf.squeeze(image, [0])
 
 #    image = tf.subtract(image, 0.5)
