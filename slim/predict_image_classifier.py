@@ -279,7 +279,7 @@ def extract():
 
     image_preprocessing_fn = preprocessing_factory.get_preprocessing(
         preprocessing_name,
-        is_training=FLAGS.eval_replicas>1, region=FLAGS.image_region)
+        is_training=FLAGS.eval_replicas>1)
 
     eval_image_size = FLAGS.eval_image_size or network_fn.default_image_size
 
@@ -290,7 +290,8 @@ def extract():
                 fast_mode=not FLAGS.aggressive_augmentation,
                 area_range=(FLAGS.minimum_area_to_crop, 1.0),
                 add_rotations=FLAGS.add_rotations,
-                normalize_per_image=FLAGS.normalize_per_image)
+                normalize_per_image=FLAGS.normalize_per_image,
+                region=FLAGS.image_region)
       else :
         return image_preprocessing_fn(img, eval_image_size, eval_image_size)
 
