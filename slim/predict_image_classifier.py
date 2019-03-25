@@ -420,7 +420,7 @@ def extract():
       openP  = '{'
       closeP = '}'
       if FLAGS.add_scores_to_features == 'probs' :
-        feature_size += num_classes
+        # feature_size += num_classes
         targets =[ tensor_id, label, features, nada, probabilities ]
       elif FLAGS.add_scores_to_features == 'logits' :
         feature_size += num_classes
