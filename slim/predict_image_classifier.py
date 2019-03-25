@@ -290,10 +290,10 @@ def extract():
                 fast_mode=not FLAGS.aggressive_augmentation,
                 area_range=(FLAGS.minimum_area_to_crop, 1.0),
                 add_rotations=FLAGS.add_rotations,
-                normalize_per_image=FLAGS.normalize_per_image,
-                region=FLAGS.image_region)
+                normalize_per_image=FLAGS.normalize_per_image)
       else :
-        return image_preprocessing_fn(img, eval_image_size, eval_image_size)
+        return image_preprocessing_fn(img, eval_image_size, eval_image_size,
+                region=FLAGS.image_region)
 
     if FLAGS.eval_replicas>1 :
       aug_list = []
