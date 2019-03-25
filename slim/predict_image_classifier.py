@@ -276,7 +276,7 @@ def extract():
 
     image_preprocessing_fn = preprocessing_factory.get_preprocessing(
         preprocessing_name,
-        is_training=FLAGS.eval_replicas>1)
+        is_training=FLAGS.eval_replicas>1, region=FLAGS.image_region)
 
     eval_image_size = FLAGS.eval_image_size or network_fn.default_image_size
 
