@@ -435,7 +435,10 @@ def extract():
         header += [ 'feature[%d]' % feature_size ]
         print(', '.join(header), file=outfile)
       else :
-        pickle.dump([num_outputs, feature_size, FLAGS.__flags], outfile)
+        if FLAGS.add_scores_to_features == 'probs' :
+          pickle.dump([num_outputs, feature_size, num_classes, FLAGS.__flags], outfile)
+        else:
+          pickle.dump([num_outputs, feature_size, FLAGS.__flags], outfile)
       # Features - outputs contents
       def print_replica(image_id, label, feats, pred=None) :
         if FLAGS.output_format=='text' :
