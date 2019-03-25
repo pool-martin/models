@@ -153,6 +153,9 @@ tf.app.flags.DEFINE_bool(
 tf.app.flags.DEFINE_integer(
     'normalize_per_image', 0, 'Normalization per image: 0 (None), 1 (Mean), 2 (Mean and Stddev)')
 
+tf.app.flags.DEFINE_integer(
+    'image_region', 0, 'Region of the image 0 = Top letf, 1 = Top Right, 2 = Bottom left, 3 = Bottom right')
+
 tf.app.flags.DEFINE_float(
     'minimum_area_to_crop', 0.05, 'Minimum area to keep in cropping for augmentation')
 
