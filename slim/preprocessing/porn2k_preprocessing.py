@@ -332,7 +332,7 @@ def preprocess_for_eval(image, height, width,
         image = tf.squeeze(image, [0])
       
       image = apply_image_normalization(image, normalize_per_image)
-    else:
+    elif region in (1, 2, 3, 4):
       if region == 1:
         height_0 = 0.0
         height_1 = 0.5
