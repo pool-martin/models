@@ -80,6 +80,11 @@ def defineUCF101Class(video_name, classes):
         if video_class[1] in video_name:
             return video_class[0]
 
+def getFrameCount(video):
+    with open(os.path.join('/DL/UCF-101/frame_count', '{}.etf'.format(video))) as f:
+        count = int(f.read())
+    return count
+
 def select_video_frames(video, split_type, args, split_test, classes):
 
     if split_test:
@@ -90,6 +95,7 @@ def select_video_frames(video, split_type, args, split_test, classes):
     print('\n', video_name, ' ', end='')
     frames = []
     frame_count, fps, _, _ = opencv.get_video_params(os.path.join(args.dataset_dir, 'videos', video_name))
+    frame_count = getFrameCount(video_name[:-4])
 
     for frame_position in list(frange(0, frame_count, decimal.Decimal(str(fps * args.sample_rate)))):
         frame_entry = "{}_{}_{}".format(video_name, video_class, frame_position)
