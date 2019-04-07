@@ -226,7 +226,7 @@ def main(_):
 
   for dataset_split_name in FLAGS.dataset_split_names.split(','):
     FLAGS.dataset_split_name = dataset_split_name
-    FLAGS.output_file = os.path.join(output_dir, 'feats.{}.{}.{}'.format(dataset_split_name, FLAGS.inception_layer, FLAGS.output_format))
+    FLAGS.output_file = os.path.join(output_dir, 'feats.{}.{}'.format(dataset_split_name, FLAGS.inception_layer))
     extract()
 
 def extract():
@@ -416,7 +416,7 @@ def extract():
     init_fn = slim.assign_from_checkpoint_fn(checkpoint_path,
       variables_to_restore) # slim.get_model_variables(FLAGS.model_name))
 
-    outfile = open(FLAGS.output_file, 'w') if FLAGS.output_file else sys.stdout
+    outfile = open(FLAGS.output_file, 'wb') if FLAGS.output_file else sys.stdout
     num_outputs = num_samples if pooled_features else num_samples * FLAGS.eval_replicas
     tensor_id = image_id if FLAGS.id_field_name else nada
     if FLAGS.extract_features :
@@ -446,7 +446,7 @@ def extract():
       # Features - outputs contents
       def print_replica(image_id, label, feats, pred=None) :
         if FLAGS.output_format=='text' :
-          record  = [ image_id.decode("utf-8") ] if FLAGS.id_field_name else  [ ]
+          record  = [ image_id ] if FLAGS.id_field_name else  [ ]
           record += [ str(label) ]
           record += [ _PREDICTION_OUTPUT_FORMAT % feats[f]  for f in range(feature_size) ]
           print(', '.join(record), file=outfile)
