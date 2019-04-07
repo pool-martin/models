@@ -45,7 +45,7 @@ def extractVideoFrames(args, video, video_frames):
     global number_of_videos
 
     frames_to_extract = [frame for frame in video_frames if not file_exists(args, video, frame)]
-    video_path = os.path.join(args.dataset_dir, 'videos', '{}.mp4'.format(video))
+    video_path = os.path.join(args.dataset_dir, 'videos', '{}.avi'.format(video))
     opencv.extract_video_frames(video, video_path, args.output_path, frames_to_extract)
     number_of_videos += 1
     print('number_of_videos:', number_of_videos)
@@ -56,13 +56,13 @@ def extract(args, all_set):
     #frame entry:
     # ApplyEyeMakeup/v_ApplyEyeMakeup_g16_c01.avi_1_0
     # video_name/path _ class _ frame
-    all_set = [x.split("_") for x in all_set]
+    all_set = [x.split(".avi_") for x in all_set]
 
     videos = set(all_set[0])
 
     video_frames = {}
     for video in videos:
-        video_frames[video] = [x[2] for x in all_set if video in x[0]]
+        video_frames[video] = [x[1].split("_")[1] for x in all_set if video in x[0]]
 
     Parallel(n_jobs=10)(delayed(extractVideoFrames)(args, video, video_frames[video]) for video in video_frames.keys())
 
