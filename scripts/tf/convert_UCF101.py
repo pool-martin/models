@@ -182,7 +182,8 @@ def _convert_dataset(split_name, metadata, dataset_dir, output_path):
 
         # Read the filename:
         meta = next(metadata)
-        video_name = meta[0]
+        # remove the .avi
+        video_name = meta[0][:-4]
         image_id = 'nada_{}_{}'.format(meta[1], meta[2])
         image_name = '{}.jpg'.format(image_id)
         image_file = os.path.join(dataset_dir, video_name, image_name)
@@ -269,7 +270,7 @@ def run(mode, split_number, label_dir, dataset_dir, output_path, blacklist_file=
         CLASSES_TO_SIZES[video_class] = train_class[video_class] + validation_class[video_class]
 
     for video_class in test_class:
-        CLASSES_TO_SIZES[video_class] = CLASSES_TO_SIZES[video_class] + test[video_class]
+        CLASSES_TO_SIZES[video_class] = CLASSES_TO_SIZES[video_class] + test_class[video_class]
 
     print('INFO: ', CLASSES_TO_SIZES, file=sys.stderr)
 
@@ -318,4 +319,3 @@ if __name__=='__main__' :
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu_to_use
 
   run(mode=args.mode, split_number=args.split_number, label_dir=args.label_dir, dataset_dir=args.dataset_dir, output_path=args.output_path, blacklist_file=args.blacklist_file, excluded_scope=args.excluded_scope)
-  
