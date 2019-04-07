@@ -95,9 +95,9 @@ def select_video_frames(video, split_type, args, split_test, classes):
     print('\n', video_name, ' ', end='')
     frames = []
     frame_count, fps, _, _ = opencv.get_video_params(os.path.join(args.dataset_dir, 'videos', video_name))
-    frame_count = getFrameCount(video_name[:-4])
+    max_frame_no = getFrameCount(video_name[:-4]) -1
 
-    for frame_position in list(frange(0, frame_count, decimal.Decimal(str(fps * args.sample_rate)))):
+    for frame_position in list(frange(0, max_frame_no, decimal.Decimal(str(fps * args.sample_rate)))):
         frame_entry = "{}_{}_{}".format(video_name, video_class, frame_position)
         frames.append(frame_entry)
 
