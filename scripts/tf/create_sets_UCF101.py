@@ -125,7 +125,7 @@ def create_splits(args):
         test_set = f.readlines()
 
 
-    full_dir_path = os.path.join(args.output_path, args.split_number, '3D', '{}_fps'.format(args.sample_rate), args.engine_type, 'w_{}_l_{}'.format(args.snippet_width, args.snippet_length))
+    full_dir_path = os.path.join(args.output_path, args.split_number, '2D', '{}_fps'.format(args.sample_rate), args.engine_type, 'w_{}_l_{}'.format(args.snippet_width, args.snippet_length))
     command = "mkdir -p " + full_dir_path
     print('\n', command)
     call(command, shell=True)
