@@ -20,7 +20,7 @@ def load_args():
     ap.add_argument('-sp', '--split-path',
                                     dest='split_path',
                                     help='path to output the extracted frames.',
-                                    type=str, required=False, default='/Exp/UCF-101/splits/')
+                                    type=str, required=False, default='/DL/UCF-101/splits/')
     ap.add_argument('-o', '--output-path',
                                     dest='output_path',
                                     help='path to output the extracted frames.',
