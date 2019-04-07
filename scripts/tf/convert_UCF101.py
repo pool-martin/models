@@ -207,8 +207,11 @@ def get_file_list_content(filename):
   # ApplyEyeMakeup/v_ApplyEyeMakeup_g08_c04.avi_1_50
   content = [ m.split('_') for m in content ]
 
-  video_name = "{}_{}_{}_{}".format(content[0], content[1], content[2], content[3])
-  return [video_name, content[4], content[5]]
+  result = []
+  for entry in content:
+    video_name = "{}_{}_{}_{}".format(entry[0], entry[1], entry[2], entry[3])
+    result.append([video_name, entry[4], entry[5]])
+  return result
 
 def run(mode, split_number, label_dir, dataset_dir, output_path, blacklist_file=None, excluded_scope=None) :
   """Runs the download and conversion operation.
@@ -249,9 +252,9 @@ def run(mode, split_number, label_dir, dataset_dir, output_path, blacklist_file=
     test_class = {}
 
     for m  in range(0, 102):
-        train_class[m] = 0
-        validation_class[m] = 0
-        test_class[m] = 0
+        train_class[str(m)] = 0
+        validation_class[str(m)] = 0
+        test_class[str(m)] = 0
 
     # Divide metadata into stratified sets
     for m  in train_metadata:
@@ -262,8 +265,11 @@ def run(mode, split_number, label_dir, dataset_dir, output_path, blacklist_file=
         test_class[m[1]] += 1
 
     CLASSES_TO_SIZES = {}
-    for video_class in range(1, 102):
-        CLASSES_TO_SIZES[video_class] = train_class[video_class] + validation_class[video_class] + test_class[video_class]
+    for video_class in train_class:
+        CLASSES_TO_SIZES[video_class] = train_class[video_class] + validation_class[video_class]
+
+    for video_class in test_class:
+        CLASSES_TO_SIZES[video_class] = CLASSES_TO_SIZES[video_class] + test[video_class]
 
     print('INFO: ', CLASSES_TO_SIZES, file=sys.stderr)
 
@@ -312,3 +318,4 @@ if __name__=='__main__' :
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu_to_use
 
   run(mode=args.mode, split_number=args.split_number, label_dir=args.label_dir, dataset_dir=args.dataset_dir, output_path=args.output_path, blacklist_file=args.blacklist_file, excluded_scope=args.excluded_scope)
+  
