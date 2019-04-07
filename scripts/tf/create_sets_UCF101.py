@@ -71,7 +71,8 @@ def frange(x, y, jump):
 
 def loadUCF101Classes(args):
     with open(os.path.join(args.dataset_dir, 'UCF101TrainTestSplits-RecognitionTask/ucfTrainTestlist/classInd.txt')) as f:
-        class_list = f.read().splitlines().split(" ")
+        class_list = f.read().splitlines()
+    class_list = [x.split(" ") for x in class_list]
     return class_list
 
 def defineUCF101Class(video_name, classes):
