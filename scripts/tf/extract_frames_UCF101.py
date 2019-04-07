@@ -58,7 +58,9 @@ def extract(args, all_set):
     # video_name/path _ class _ frame
     all_set = [x.split(".avi_") for x in all_set]
 
-    videos = set(all_set[0])
+    all_videos = [x[0] for x in all_set]
+
+    videos = set(all_videos)
 
     video_frames = {}
     for video in videos:
