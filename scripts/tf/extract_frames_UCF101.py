@@ -9,7 +9,7 @@ import pathlib
 import argparse, os, time, random, math
 from subprocess import call
 
-int number_of_videos = 0
+number_of_videos = 0
 
 def load_args():
     ap = argparse.ArgumentParser(description='Create Splits to be used in 2D CNN models.')
@@ -44,7 +44,7 @@ def file_exists(args, video, frame_identifier):
 def extractVideoFrames(args, video, video_frames):
     global number_of_videos
 
-    frames_to_extract = [frame for frame in frames_to_extract if not file_exists(args, video, frame)]
+    frames_to_extract = [frame for frame in video_frames if not file_exists(args, video, frame)]
     video_path = os.path.join(args.dataset_dir, 'videos', '{}.mp4'.format(video))
     opencv.extract_video_frames(video, video_path, args.output_path, frames_to_extract)
     number_of_videos += 1
