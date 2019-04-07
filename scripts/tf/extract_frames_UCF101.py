@@ -62,7 +62,7 @@ def extract(args, all_set):
 
     video_frames = {}
     for video in videos:
-        video_frames[video] = [x[1].split("_")[1] for x in all_set if video in x[0]]
+        video_frames[video] = ["nada_{}".format(x[1]) for x in all_set if video in x[0]]
 
     Parallel(n_jobs=10)(delayed(extractVideoFrames)(args, video, video_frames[video]) for video in video_frames.keys())
 
