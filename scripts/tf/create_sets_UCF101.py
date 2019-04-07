@@ -71,7 +71,7 @@ def frange(x, y, jump):
 
 def select_video_frames(video, split_type, args, split_test):
 
-    video_name, video_class = video.strip().split(" ")
+    video_name, video_class = video.split(" ")
     print('\n', video_name, ' ', end='')
     frames = []
     frame_count, fps, _, _ = opencv.get_video_params(os.path.join(args.dataset_dir, 'videos', video_name))
