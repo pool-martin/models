@@ -66,9 +66,11 @@ def create_splits(args):
     print('Network qty: ', network_qty, sep='')
 
     for vClass in range(1, 102):
-        videos = [x[0] for x in content if x[1] == str(vClass)]
+        videos = [x for x in content if x[1] == str(vClass)]
+        class_qty = len(videos)
+        print("class: {} videos: \n {} \n\n\n\n".format(vClass, videos))
         #choosing svm validation set
-        while(len(videos) > (.85 * network_qty)):
+        while(len(videos) > (.85 * class_qty)):
                 video_choosed = secure_random.choice(videos)
                 network_validation_set.append(video_choosed)
                 videos.remove(video_choosed)
