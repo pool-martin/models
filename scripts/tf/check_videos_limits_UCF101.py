@@ -96,7 +96,7 @@ def listVideosInDir(path):
     # r=root, d=directories, f = files
     for r, d, f in os.walk(path):
         for file in f:
-            if '.txt' in file:
+            if '.avi' in file:
                 files.append(os.path.join(r, file))
     return files
     
