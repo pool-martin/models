@@ -82,12 +82,14 @@ def get_real_values(video_path, fps, frame_count):
   duration = get_video_real_duration(fps, real_frame_count)
   return real_frame_count, duration
 
-def checkOpencvVideo(real_duration_path, path, video):
-    video_path = os.path.join(path, 'videos', video)
+def checkOpencvVideo(real_duration_path, video_path):
     frame_count, fps, height, width = opencv.get_video_params(video_path)
     real_frame_count, real_duration = get_real_values(video_path, fps, frame_count)
 
-    real_etf_path = os.path.join(real_duration_path, '{}.etf'.format(video.split('.')[0]))
+    video_name = video_path.split('.')[0][len('/DL/UCF-101/videos/'):]
+    real_etf_path = os.path.join(real_duration_path, '{}.etf'.format(video_name))
+    # cria o sub dir
+    pathlib.Path(os.path.dirname(real_etf_path)).mkdir(parents=True, exist_ok=True)
     with open(real_etf_path, 'w') as f:
       f.write(str(int(real_frame_count)))
     
@@ -124,10 +126,10 @@ def mainOpenCV():
   videos = listVideosInDir(videos_path)
 
 
-  for video in videos:
-    checkOpencvVideo(real_duration_path, path, video)
+  for video_path in videos:
+    checkOpencvVideo(real_duration_path, video_path)
 
     
 if __name__ == '__main__':
-    mainOpenCV()
-    #mainOpenCVMultiThread()
+    #mainOpenCV()
+    mainOpenCVMultiThread()
