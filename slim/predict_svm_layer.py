@@ -106,6 +106,12 @@ else:
     image_ids, labels, features = su.read_pickled_data(FLAGS.input_test)
 num_samples = len(image_ids)
 
+meu_file = open('/workspace/test.jp', 'w')
+for id in image_ids:
+    print(id.decode("utf-8"), sep='\n', file=meu_file)
+meu_file.close()
+# sys.exit(0)
+
 start = su.print_and_time('Preprocessing test data...', past=start, file=sys.stderr)
 features = preprocessor.transform(features)
 
@@ -250,6 +256,7 @@ try :
     df = pd.read_csv(FLAGS.output_predictions, names=['Frame', 'previous_labels', 'prob_porn', 'score_porn'])
     print('\n Could read the csv', end='', file=sys.stderr)
     df = df.sort_values(by='Frame')
+    df = df.drop_duplicates()
     print('\n Sorted by frame', end='', file=sys.stderr)
     def compare(row):
         if row['prob_porn'] >= 0.5:

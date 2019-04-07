@@ -36,14 +36,14 @@ def print_and_time(*args, **kwargs) :
 def read_pickled_data(filename) :
     source = open(filename, 'rb')
     sizes = pickle.load(source)
-    num_samples = sizes[0]
+    num_samples = sizes[0] * 2
     feature_size = sizes[1]
     print("num_samples: %d feature_size %d" % (num_samples, feature_size))
 	
     ids = []
     labels = np.empty([num_samples], dtype=np.float)
     print("labels and features 0 created")
-    features = np.empty([num_samples, feature_size], dtype=np.float)
+    features = np.empty([num_samples, feature_size -2], dtype=np.float)
     for s in range(num_samples) :
         sample = pickle.load(source)
         ids.append(sample[0])
