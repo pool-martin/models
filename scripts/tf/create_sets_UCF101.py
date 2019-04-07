@@ -69,9 +69,23 @@ def frange(x, y, jump):
     yield int(round(x))
     x += jump
 
-def select_video_frames(video, split_type, args, split_test):
+def loadUCF101Classes(args):
+    with open(os.path.join(args.dataset_dir, 'UCF101TrainTestSplits-RecognitionTask/ucfTrainTestlist/classInd.txt')) as f:
+        class_list = f.read().splitlines().split(" ")
+    return class_list
 
-    video_name, video_class = video.split(" ")
+def defineUCF101Class(video_name, classes):
+    for video_class in classes:
+        if video_class[1] in video_name:
+            return video_class[0]
+
+def select_video_frames(video, split_type, args, split_test, classes):
+
+    if split_test:
+        video_name = video
+        video_class = defineUCF101Class(video_name, classes)
+    else:
+        video_name, video_class = video.split(" ")
     print('\n', video_name, ' ', end='')
     frames = []
     frame_count, fps, _, _ = opencv.get_video_params(os.path.join(args.dataset_dir, 'videos', video_name))
@@ -84,8 +98,9 @@ def select_video_frames(video, split_type, args, split_test):
 
 def create_video_split(name_set, split_type, all_set, args, split_test=False):
     split = []
+    classes = loadUCF101Classes(args)
     for video in all_set:
-        split.extend(select_video_frames(video.strip(), split_type, args,split_test))
+        split.extend(select_video_frames(video.strip(), split_type, args,split_test, classes))
 
 
     split_path = os.path.join(args.output_path, args.split_number, split_type, '{}_fps'.format(args.sample_rate), args.engine_type, name_set + '.txt')
