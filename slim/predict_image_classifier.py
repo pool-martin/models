@@ -153,6 +153,9 @@ tf.app.flags.DEFINE_bool(
 tf.app.flags.DEFINE_integer(
     'normalize_per_image', 0, 'Normalization per image: 0 (None), 1 (Mean), 2 (Mean and Stddev)')
 
+tf.app.flags.DEFINE_integer(
+    'image_region', 0, 'Region of the image 0 = Top letf, 1 = Top Right, 2 = Bottom left, 3 = Bottom right')
+
 tf.app.flags.DEFINE_float(
     'minimum_area_to_crop', 0.05, 'Minimum area to keep in cropping for augmentation')
 
@@ -289,7 +292,8 @@ def extract():
                 add_rotations=FLAGS.add_rotations,
                 normalize_per_image=FLAGS.normalize_per_image)
       else :
-        return image_preprocessing_fn(img, eval_image_size, eval_image_size)
+        return image_preprocessing_fn(img, eval_image_size, eval_image_size,
+                region=FLAGS.image_region)
 
     if FLAGS.eval_replicas>1 :
       aug_list = []
@@ -420,7 +424,7 @@ def extract():
       openP  = '{'
       closeP = '}'
       if FLAGS.add_scores_to_features == 'probs' :
-        feature_size += num_classes
+        # feature_size += num_classes
         targets =[ tensor_id, label, features, nada, probabilities ]
       elif FLAGS.add_scores_to_features == 'logits' :
         feature_size += num_classes
@@ -435,7 +439,10 @@ def extract():
         header += [ 'feature[%d]' % feature_size ]
         print(', '.join(header), file=outfile)
       else :
-        pickle.dump([num_outputs, feature_size, FLAGS.__flags], outfile)
+        if FLAGS.add_scores_to_features == 'probs' :
+          pickle.dump([num_outputs, feature_size, num_classes, FLAGS.__flags], outfile)
+        else:
+          pickle.dump([num_outputs, feature_size, FLAGS.__flags], outfile)
       # Features - outputs contents
       def print_replica(image_id, label, feats, pred=None) :
         if FLAGS.output_format=='text' :

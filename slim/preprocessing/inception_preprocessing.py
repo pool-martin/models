@@ -173,7 +173,8 @@ def preprocess_for_train(image, height, width, bbox,
                          fast_mode=True,
                          add_rotations=False,
                          normalize_per_image=0,
-                         scope=None):
+                         scope=None,
+                         region=0):
   """Distort one image for training a network.
 
   Distorting images provides a useful technique for augmenting the data
@@ -250,13 +251,49 @@ def preprocess_for_train(image, height, width, bbox,
 #    distorted_image = tf.subtract(distorted_image, 0.5)
 #    distorted_image = tf.multiply(distorted_image, 2.0)
     distorted_image = apply_image_normalization(distorted_image, normalize_per_image)
+    if region in [1,2,3,4]:
+      if region == 1:
+        height_0 = 0.0
+        height_1 = 0.5
+        width_0 = 0.0
+        width_1 = 0.5
+      elif region == 2:
+        height_0 = 0.0
+        height_1 = 0.5
+        width_0 = 0.5
+        width_1 = 1.0
+      elif region == 3:
+        height_0 = 0.5
+        height_1 = 1.0
+        width_0 = 0.0
+        width_1 = 0.5
+      elif region == 4:
+        height_0 = 0.5
+        height_1 = 1.0
+        width_0 = 0.5
+        width_1 = 1.0
+
+      distorted_image = tf.expand_dims(distorted_image, 0)
+      boxes = tf.Variable([[height_0, width_0, height_1, width_1]])
+      distorted_image = tf.image.crop_and_resize(distorted_image, boxes, [0], [height,width])
+      distorted_image = tf.squeeze(distorted_image, [0])
+    if region == 5:
+      distorted_image = tf.image.central_crop(distorted_image, central_fraction=0.50)
+
+      # Resize the image to the specified height and width.
+      distorted_image = tf.expand_dims(distorted_image, 0)
+      distorted_image = tf.image.resize_bilinear(distorted_image, [height, width], align_corners=False)
+      distorted_image = tf.squeeze(distorted_image, [0])
+
+
     return distorted_image
 
 
 def preprocess_for_eval(image, height, width,
                         central_fraction=0.875, 
                         normalize_per_image=0,
-                        scope=None):
+                        scope=None,
+                        region=0):
   """Prepare one image for evaluation.
 
   If height and width are specified it would output an image with that size by
@@ -280,18 +317,57 @@ def preprocess_for_eval(image, height, width,
   with tf.name_scope(scope, 'eval_image', [image, height, width]):
     if image.dtype != tf.float32:
       image = tf.image.convert_image_dtype(image, dtype=tf.float32)
-    # Crop the central region of the image with an area containing 87.5% of
-    # the original image.
-    if central_fraction:
-      image = tf.image.central_crop(image, central_fraction=central_fraction)
 
-    if height and width:
+    if region == 0:
+      # Crop the central region of the image with an area containing 87.5% of
+      # the original image.
+      if central_fraction:
+        image = tf.image.central_crop(image, central_fraction=central_fraction)
+
+      if height and width:
+        # Resize the image to the specified height and width.
+        image = tf.expand_dims(image, 0)
+        image = tf.image.resize_bilinear(image, [height, width],
+                                        align_corners=False)
+        image = tf.squeeze(image, [0])
+      
+      image = apply_image_normalization(image, normalize_per_image)
+    else:
+      if region == 1:
+        height_0 = 0.0
+        height_1 = 0.5
+        width_0 = 0.0
+        width_1 = 0.5
+      elif region == 2:
+        height_0 = 0.0
+        height_1 = 0.5
+        width_0 = 0.5
+        width_1 = 1.0
+      elif region == 3:
+        height_0 = 0.5
+        height_1 = 1.0
+        width_0 = 0.0
+        width_1 = 0.5
+      elif region == 4:
+        height_0 = 0.5
+        height_1 = 1.0
+        width_0 = 0.5
+        width_1 = 1.0
+
+      #apply before crop and resize because crop_and_resize needs interval [0,1]
+      image = apply_image_normalization(image, normalize_per_image)
+      image = tf.expand_dims(image, 0)
+      boxes = tf.Variable([[height_0, width_0, height_1, width_1]])
+      image = tf.image.crop_and_resize(image, boxes, [0], [height,width])
+      image = tf.squeeze(image, [0])
+    if region == 5:
+      image = tf.image.central_crop(image, central_fraction=0.50)
+
       # Resize the image to the specified height and width.
       image = tf.expand_dims(image, 0)
-      image = tf.image.resize_bilinear(image, [height, width],
-                                       align_corners=False)
+      image = tf.image.resize_bilinear(image, [height, width], align_corners=False)
       image = tf.squeeze(image, [0])
-    image = apply_image_normalization(image, normalize_per_image)
+
 #    image = tf.subtract(image, 0.5)
 #    image = tf.multiply(image, 2.0)
     return image
@@ -302,7 +378,8 @@ def preprocess_image(image, height, width,
                      bbox=None,
                      fast_mode=True,
                      add_rotations=False,
-                     normalize_per_image=0):
+                     normalize_per_image=0,
+                     region=0):
   """Pre-process one image for training or evaluation.
 
   Args:
@@ -325,7 +402,9 @@ def preprocess_image(image, height, width,
   if is_training:
     return preprocess_for_train(image, height, width, bbox, fast_mode, 
         add_rotations=add_rotations,
-        normalize_per_image=normalize_per_image)
+        normalize_per_image=normalize_per_image,
+        region=region)
   else:
     return preprocess_for_eval(image, height, width,
-        normalize_per_image=normalize_per_image)
+        normalize_per_image=normalize_per_image,
+        region=region)
