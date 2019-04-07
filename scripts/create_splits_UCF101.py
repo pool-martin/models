@@ -49,7 +49,7 @@ def create_splits(args):
     network_training_set = []
 
     #collecting all split1 videos
-    with open(os.path.join(args.dataset_dir, args.dataset_dir, 'TrainTestSplits-RecognitionTask/ucfTrainTestlist/trainlist0{}.txt'.format(args.split_number))) as f:
+    with open(os.path.join(args.dataset_dir, args.dataset_dir, 'UCF101TrainTestSplits-RecognitionTask/ucfTrainTestlist/trainlist0{}.txt'.format(args.split_number))) as f:
             content = f.readlines()
 
     #choosing the SVM set
@@ -96,7 +96,7 @@ def create_splits(args):
             for item in network_validation_set:
                     f.write("%s" % item)
 
-    command = 'cp /DL/UCF-101/UCF101TrainTestSplits-RecognitionTask/ucfTrainTestlist/testlist0{}/.txt {}'.format(args.split_number, full_dir_path)
+    command = 'cp /DL/UCF-101/UCF101TrainTestSplits-RecognitionTask/ucfTrainTestlist/testlist0{}.txt {}'.format(args.split_number, full_dir_path)
     print('\n', command)
     call(command, shell=True)
 
