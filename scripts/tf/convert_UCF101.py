@@ -64,7 +64,7 @@ def load_args():
     ap.add_argument('-l', '--label-dir',
                                     dest='label_dir',
                                     help='labels dir.',
-                                    type=str, required=False, default='/Exp/UCF-101/splits/')
+                                    type=str, required=False, default='/DL/UCF-101/splits/')
     ap.add_argument('-s', '--split-number',
                                     dest='split_number',
                                     help='split to be created.',
