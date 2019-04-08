@@ -156,7 +156,7 @@ python3 scripts/tf/extract_frames_UCF101.py -s s3
 
 python3 scripts/tf/convert_UCF101.py -s s3
 
-python3 slim/predict_image_classifier.py --alsologtostderr --base_dir=/Exp/UCF-101/art/inception_v4/s1/imagenet_extract --checkpoint_path=/DL/initial_weigths/inception_v4/rgb_imagenet/model.ckpt --dataset_dir=/DL/UCF-101/tfrecords/s1 --task_name=label --dataset_name=ucf101 --model_name=inception_v4 --preprocessing_name=porn2k --id_field_name=id --eval_replicas=1 --eval_image_size=224 --pool_features=none --pool_scores=none --extract_features --inception_layer=Mixed_7c --checkpoint_exclude_scopes=InceptionV4/Logits,InceptionV4/AuxLogits --add_scores_to_features=probs --output_format=pickle --normalize_per_image=1 --batch_size=160 --gpu_to_use=1
+python3 slim/predict_image_classifier.py --alsologtostderr --base_dir=/Exp/UCF-101/art/inception_v4/s1/imagenet_extract --checkpoint_path=/DL/initial_weigths/inception_v4/rgb_imagenet/model.ckpt --dataset_dir=/DL/UCF-101/tfrecords/s1 --task_name=label --dataset_name=ucf101 --model_name=inception_v4 --preprocessing_name=porn2k --id_field_name=id --eval_replicas=1 --eval_image_size=224 --pool_features=none --pool_scores=none --extract_features --inception_layer=Mixed_7c --checkpoint_exclude_scopes=InceptionV4/Logits,InceptionV4/AuxLogits --output_format=pickle --normalize_per_image=1 --batch_size=160 --gpu_to_use=1
 
 
 s1:
@@ -168,6 +168,14 @@ total steps = 32050
 tempo ~ 0.925 / step 
 tempo/epoca = 79 minutos
 
-python slim/train_image_classifier.py --train_dir=/Exp/UCF-101/art/inception_v4/s1/finetune/checkpoints --dataset_dir=/DL/UCF-101/tfrecords/s1 --dataset_name=ucf101     --dataset_split_name=train     --model_name=inception_v4     --checkpoint_path=/DL/initial_weigths/inception_v4/rgb_imagenet/model.ckpt --checkpoint_exclude_scopes=InceptionV4/Logits,InceptionV4/AuxLogits --save_interval_secs=3600     --optimizer=rmsprop     --normalize_per_image=1  --train_image_size=224   --max_number_of_steps=32300 --experiment_tag="Experiment: Finetune; Model: Inceptionv4; Normalization: mode 1" --experiment_file=experiment.meta --batch_size=48 --gpu_to_use=0
+INFO:  {'test': 28501, 'train': 61534, 'validation': 11279}
 
-python slim/eval_image_classifier.py  --base_dir=/Exp/UCF-101/art/inception_v4/s1/finetune --dataset_dir=/DL/UCF-101/tfrecords/s1 --dataset_name=ucf101     --dataset_split_name=validation --model_name=inception_v4 --eval_image_size=224 --batch_size=10 --gpu_to_use=0 
+s2:
+INFO:  {'train': 61781, 'validation': 11180, 'test': 28353}
+
+s3:
+INFO:  {'validation': 11308, 'train': 61570, 'test': 28436}
+
+python slim/train_image_classifier.py --train_dir=/Exp/UCF-101/art/inception_v4/s1/finetune/checkpoints --dataset_dir=/DL/UCF-101/tfrecords/s1 --dataset_name=ucf101     --dataset_split_name=train     --model_name=inception_v4     --checkpoint_path=/DL/initial_weigths/inception_v4/rgb_imagenet/model.ckpt --checkpoint_exclude_scopes=InceptionV4/Logits,InceptionV4/AuxLogits --save_interval_secs=3600     --optimizer=rmsprop     --normalize_per_image=1  --train_image_size=224   --max_number_of_steps=32300 --experiment_tag="Experiment: Finetune; Model: Inceptionv4; Normalization: mode 1" --experiment_file=experiment.meta --batch_size=48 --gpu_to_use=1
+
+python slim/eval_image_classifier.py  --base_dir=/Exp/UCF-101/art/inception_v4/s1/finetune --dataset_dir=/DL/UCF-101/tfrecords/s1 --dataset_name=ucf101     --dataset_split_name=validation --model_name=inception_v4 --eval_image_size=224 --batch_size=10 --gpu_to_use=0
