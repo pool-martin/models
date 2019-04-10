@@ -34,7 +34,7 @@ _FILE_PATTERN = 'ucf101_%s_*.tfrecord'
 
 #SPLITS_TO_SIZES = {'train': 3320, 'validation': 350}
 
-_NUM_CLASSES = 2
+_NUM_CLASSES = 101
 
 _ITEMS_TO_DESCRIPTIONS = {
     'id'       : 'id of the image.',
