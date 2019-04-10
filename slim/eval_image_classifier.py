@@ -200,7 +200,7 @@ def main(_):
 #    })
     names_to_values, names_to_updates = slim.metrics.aggregate_metric_map({
         'accuracy': tf.metrics.accuracy(labels, predictions),
-        'mean_per_class_accuracy': tf.metrics.mean_per_class_accuracy(labels, predictions, dataset.num_classes - FLAGS.labels_offset),
+#        'mean_per_class_accuracy': tf.metrics.mean_per_class_accuracy(labels, predictions, dataset.num_classes - FLAGS.labels_offset),
         'auc': tf.metrics.auc(labels, predictions),
         "mse": tf.metrics.mean_squared_error(labels, predictions),
         'precision': tf.metrics.precision(labels, predictions),
