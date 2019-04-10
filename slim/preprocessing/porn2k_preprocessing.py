@@ -314,7 +314,7 @@ def preprocess_for_eval(image, height, width,
   Returns:
     3-D float Tensor of prepared image.
   """
-  with tf.name_scope(scope, 'eval_image', [image, height, width]):
+  with tf.name_scope(scope, 'distort_image', [image, height, width]):
     if image.dtype != tf.float32:
       image = tf.image.convert_image_dtype(image, dtype=tf.float32)
 
