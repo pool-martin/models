@@ -179,3 +179,10 @@ INFO:  {'validation': 11308, 'train': 61570, 'test': 28436}
 python slim/train_image_classifier.py --train_dir=/Exp/UCF-101/art/inception_v4/s1/finetune/checkpoints --dataset_dir=/DL/UCF-101/tfrecords/s1 --dataset_name=ucf101     --dataset_split_name=train     --model_name=inception_v4     --checkpoint_path=/DL/initial_weigths/inception_v4/rgb_imagenet/model.ckpt --checkpoint_exclude_scopes=InceptionV4/Logits,InceptionV4/AuxLogits --save_interval_secs=3600     --optimizer=rmsprop     --normalize_per_image=1  --train_image_size=224   --max_number_of_steps=32300 --experiment_tag="Experiment: Finetune; Model: Inceptionv4; Normalization: mode 1" --experiment_file=experiment.meta --batch_size=48 --gpu_to_use=1
 
 python slim/eval_image_classifier.py  --base_dir=/Exp/UCF-101/art/inception_v4/s1/finetune --dataset_dir=/DL/UCF-101/tfrecords/s1 --dataset_name=ucf101     --dataset_split_name=validation --model_name=inception_v4 --eval_image_size=224 --batch_size=10 --gpu_to_use=0
+
+
+
+python slim/train_svm_layer_UCF101.py --input_training /Exp/UCF-101/art/inception_v4/s1/imagenet_extract/svm.features --output_model /Exp/UCF-101/art/inception_v4/s1/imagenet_extract/svm.models/svm.model --jobs 5 --svm_method LINEAR_DUAL --preprocess NONE --max_iter_hyper 13
+
+
+python slim/predict_svm_layer.py --input_model /Exp/UCF-101/art/inception_v4/s1/imagenet_extract/svm.models/svm.model --input_test /Exp/UCF-101/art/inception_v4/s1/imagenet_extract/svm.features/feats.test --pool_by_id none  --output_predictions /Exp/UCF-101/art/inception_v4/s1/imagenet_extract/svm.predictions/test.prediction.txt --output_metrics /Exp/UCF-101/art/inception_v4/s1/imagenet_extract/svm.predictions/test.metrics.txt --output_images /Exp/UCF-101/art/inception_v4/s1/imagenet_extract/svm.predictions/test.images --compute_rolling_window

@@ -71,6 +71,7 @@ ids_val, labels_val, features_val = su.read_pickled_data(os.path.join(FLAGS.inpu
 start = su.print_and_time('', past=start, file=sys.stderr)
 ids = np.append(ids_train, ids_val)
 labels = np.append(labels_train, labels_val)
+labels = sklearn.preprocessing.label_binarize(labels, classes=list(range(1, 102)))
 features = np.append(features_train, features_val, axis=0)
 print('ids', ids.shape, 'labels', labels.shape, 'features', features.shape)
 num_samples = len(ids)
