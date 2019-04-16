@@ -71,7 +71,7 @@ ids_val, labels_val, features_val = su.read_pickled_data(os.path.join(FLAGS.inpu
 start = su.print_and_time('', past=start, file=sys.stderr)
 ids = np.append(ids_train, ids_val)
 labels = np.append(labels_train, labels_val)
-labels = sklearn.preprocessing.label_binarize(labels, classes=list(range(1, 102)))
+# labels = sklearn.preprocessing.label_binarize(labels, classes=list(range(1, 102)))
 features = np.append(features_train, features_val, axis=0)
 print('ids', ids.shape, 'labels', labels.shape, 'features', features.shape)
 num_samples = len(ids)
@@ -117,7 +117,7 @@ if not FLAGS.random_forest:
         print('Best params:', classifier_m.best_params_, file=sys.stderr)
         print('...', classifier_m.best_params_, end='', file=sys.stderr)
     else:
-        classifier_m = su.hyperoptimizer(classifier, tuning, max_iter=HYPER_MAX_ITER, n_jobs=HYPER_JOBS, group=not FLAGS.no_group)
+        classifier_m = su.hyperoptimizer(classifier, tuning, scoring='accuracy', max_iter=HYPER_MAX_ITER, n_jobs=HYPER_JOBS, group=not FLAGS.no_group)
         #print('Labels: ', labels, end='', file=sys.stderr)
         #print('LabelsShape: ', labels.shape, end='', file=sys.stderr)
         #sys.exit(1)
