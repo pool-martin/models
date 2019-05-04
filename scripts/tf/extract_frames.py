@@ -9,7 +9,7 @@ import pathlib
 import argparse, os, time, random, math
 from subprocess import call
 
-int number_of_videos = 0
+number_of_videos = 0
 
 def load_args():
     ap = argparse.ArgumentParser(description='Create Splits to be used in 2D or 3D CNN models.')
