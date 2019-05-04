@@ -47,7 +47,7 @@ def extractVideoFrames(args, video, video_frames):
     frames_to_extract = []
     for identifier in video_frames:
         s_identifier = identifier.split('_')
-        frames_path = os.path.join(args.split_path, args.split_number, '3D', '1_fps', 'opencv', 'w_1_l_30', video, '{}.txt'.format(identifier))
+        frames_path = os.path.join(args.split_path, args.split_number, '3D', '1_fps', 'opencv', 'w_1_l_1', video, '{}.txt'.format(identifier))
         content = []
         with open(frames_path, 'r') as f:
             content = f.readlines()
