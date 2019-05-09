@@ -63,8 +63,8 @@ df2 = df2.sort_values(by='Frame')
 def compare(row):
     return int(row['k_prob_g5'])
 
-df['final_result'] = df.apply(compare, axis=1)
-df2['final_result'] = df2.apply(compare, axis=1)
+df['result_model_1'] = df.apply(compare, axis=1)
+df2['result_model_2'] = df2.apply(compare, axis=1)
 
 def compare2(row):
     return int(row['previous_labels'])
@@ -79,8 +79,8 @@ print('\n joined', end='', file=sys.stderr)
 print('\n Will run Mcnemar', end='', file=sys.stderr)
 
 tb = mcnemar_table(y_target=df['gt_labels'].values, 
-                   y_model1=df['final_result_model_1'].values, 
-                   y_model2=df['final_result_model_2'].values)
+                   y_model1=df['result_model_1'].values, 
+                   y_model2=df['result_model_2'].values)
 
 print(tb)
 
