@@ -14,6 +14,7 @@ import sklearn.gaussian_process
 import sklearn.model_selection
 import sklearn.preprocessing 
 from sklearn.ensemble import RandomForestClassifier
+import pandas as pd
 
 # class Preprocess_None(x) :     
 #     def fit_transform(self, x) :
@@ -33,13 +34,40 @@ def print_and_time(*args, **kwargs) :
     print(*args, end=end, **kwargs)
     return now
 
-def read_pickled_data(filename) :
+def removeDuplicates(ids, labels, features_in, feature_size, filename):
+    print('Remove Duplicates', features_in.dtype, 'feat-shape: ', features_in.shape, labels.dtype, 'labels.shape: ', labels.shape)
+    df = pd.DataFrame(data={'ids':ids, 'labels':labels, 'features':features_in.tolist()})
+#    print(df)
+    df = df.iloc[df.astype(str).drop_duplicates(subset='ids').index]
+#    print(df)
+    ids = df['ids'].values
+    labels = df['labels'].values
+    #df['features'] = df['features'].apply(lambda x: np.array(x))
+    f_features = df['features'].values.tolist()
+
+    features = np.empty([len(f_features), feature_size], dtype=np.float)
+    for s in  range(len(f_features)):
+        features[s] = f_features[s]
+
+
+    print('Remove Duplicates - end', features.dtype, 'feat-shape: ', features.shape, labels.dtype, 'labels.shape: ', labels.shape)
+    outfile = open(filename+".fix", 'wb')
+    pickle.dump([len(f_features), feature_size], outfile)
+    for image_id, label, feats in zip(ids, labels, features):
+        pickle.dump([image_id, label, feats], outfile)
+    outfile.close()
+
+    return ids, labels, features
+
+def read_pickled_data_to_fix_files(filename) :
     source = open(filename, 'rb')
+#    source = open(filename+".fix", 'rb')
     sizes = pickle.load(source)
-    num_samples = sizes[0]
+    num_samples = sizes[0] * 2
+#    num_samples = sizes[0]
     feature_size = sizes[1]
     print("num_samples: %d feature_size %d" % (num_samples, feature_size))
-	
+
     ids = []
     labels = np.empty([num_samples], dtype=np.float)
     print("labels and features 0 created")
@@ -49,6 +77,34 @@ def read_pickled_data(filename) :
         ids.append(sample[0])
         labels[s] = sample[1]
         features[s] = sample[2]
+    source.close()
+
+    ids, labels, features = removeDuplicates(ids, labels, features, feature_size, filename)
+
+#    print('result: ids', ids.shape, ' label: ', labels.shape, 'feat: ', features.shape)
+
+    return ids, labels, features
+
+
+def read_pickled_data(filename) :
+    source = open(filename, 'rb')
+    sizes = pickle.load(source)
+    num_samples = sizes[0]
+    feature_size = sizes[1]
+#    num_classes = sizes[2]
+    print("num_samples: %d feature_size: %d num_classes: %d" % (num_samples, feature_size, num_classes))
+	
+    ids = []
+    labels = np.empty([num_samples], dtype=np.float)
+    print("labels and features 0 created")
+    features = np.empty([num_samples, feature_size], dtype=np.float)
+#    probs = np.empty([num_samples, num_classes], dtype=np.float)
+    for s in range(num_samples) :
+        sample = pickle.load(source)
+        ids.append(sample[0])
+        labels[s] = sample[1]
+        features[s] = sample[2]
+#        probs[s] = sample[3]
     source.close()
     return ids, labels, features
 
