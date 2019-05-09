@@ -59,23 +59,29 @@ print('\n Sorted by frame', end='', file=sys.stderr)
 df2 = pd.read_csv(FLAGS.file_2)
 df2 = df2.sort_values(by='Frame')
 
-df.set_index('Frame').join(df2.set_index('Frame'), lsuffix='_model_1', rsuffix='_model_2')
 
 def compare(row):
     return int(row['k_prob_g5'])
 
-df['result_1'] = df.apply(compare, axis=1)
-df['result_2'] = df.apply(compare, axis=1)
+df['final_result'] = df.apply(compare, axis=1)
+df2['final_result'] = df2.apply(compare, axis=1)
+
+
+print('\n Created final_results', end='', file=sys.stderr)
+
+df.set_index('Frame').join(df2.set_index('Frame'), lsuffix='_model_1', rsuffix='_model_2')
+
+print('\n joined', end='', file=sys.stderr)
 
 def compare2(row):
-    return int(row['previous_labels'])
+    return int(row['previous_labels_model_1'])
 df['gt_labels'] = df.apply(compare2, axis=1)
 
 print('\n Will run Mcnemar', end='', file=sys.stderr)
 
 tb = mcnemar_table(y_target=df['gt_labels'].values, 
-                   y_model1=df['result_1'].values, 
-                   y_model2=df['result_1'].values)
+                   y_model1=df['final_result_model_1'].values, 
+                   y_model2=df['final_result_model_2'].values)
 
 print(tb)
 
@@ -83,9 +89,6 @@ chi2, p = mcnemar(ary=tb, exact=True)
 
 print('chi-squared:', chi2)
 print('p-value:', p)
-
-print(res, end='', file=sys.stderr)
-
 
 print('\n Total time ', end='', file=sys.stderr)
 _ = su.print_and_time('Done!\n', past=first, file=sys.stderr)
