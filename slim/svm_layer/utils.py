@@ -92,7 +92,7 @@ def read_pickled_data(filename) :
     num_samples = sizes[0]
     feature_size = sizes[1]
 #    num_classes = sizes[2]
-    print("num_samples: %d feature_size: %d num_classes: %d" % (num_samples, feature_size, num_classes))
+    print("num_samples: %d feature_size: %d " % (num_samples, feature_size))
 	
     ids = []
     labels = np.empty([num_samples], dtype=np.float)
