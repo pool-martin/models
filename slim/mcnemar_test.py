@@ -78,7 +78,7 @@ print('\n joined', end='', file=sys.stderr)
 
 print('\n Will run Mcnemar', end='', file=sys.stderr)
 
-tb = mcnemar_table(y_target=df['gt_labels_model_1'].values, 
+tb = mcnemar_table(y_target=df['gt_labels'].values, 
                    y_model1=df['final_result_model_1'].values, 
                    y_model2=df['final_result_model_2'].values)
 
