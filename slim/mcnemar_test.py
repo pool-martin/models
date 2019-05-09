@@ -71,8 +71,6 @@ def compare2(row):
     return int(row['previous_labels'])
 df['gt_labels'] = df.apply(compare2, axis=1)
 
-outDf = pd.Dataframe()
-ouDf.join(df['model_1'])
 print('\n Will run Mcnemar', end='', file=sys.stderr)
 
 tb = mcnemar_table(y_target=df['gt_labels'].values, 
