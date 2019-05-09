@@ -72,15 +72,15 @@ df['gt_labels'] = df.apply(compare2, axis=1)
 
 print('\n Created final_results', end='', file=sys.stderr)
 
-df.set_index('Frame').join(df2.set_index('Frame'), lsuffix='_model_1', rsuffix='_model_2')
+dfjoined = df.set_index('Frame').join(df2.set_index('Frame'), lsuffix='_model_1', rsuffix='_model_2')
 
 print('\n joined', end='', file=sys.stderr)
 
 print('\n Will run Mcnemar', end='', file=sys.stderr)
 
-tb = mcnemar_table(y_target=df['gt_labels'].values, 
-                   y_model1=df['result_model_1'].values, 
-                   y_model2=df['result_model_2'].values)
+tb = mcnemar_table(y_target=dfjoined['gt_labels'].values, 
+                   y_model1=dfjoined['result_model_1'].values, 
+                   y_model2=dfjoined['result_model_2'].values)
 
 print(tb)
 
