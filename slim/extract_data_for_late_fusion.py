@@ -152,10 +152,12 @@ outfile.close()
 
 df = pd.read_csv(os.path.join(FLAGS.output_predictions, 'saliency.train_and_val.predictions'), names=['Frame', 'previous_labels', 'prob_porn', 'score_porn'])
 df = df.sort_values(by='Frame')
+df = df.drop_duplicates(subset='Frame')
 print('\n Sorted by frame', end='', file=sys.stderr)
 
 df2 = pd.read_csv(os.path.join(FLAGS.output_predictions, 'finetune.train_and_val.predictions'), names=['Frame', 'previous_labels', 'prob_porn', 'score_porn'])
 df2 = df2.sort_values(by='Frame')
+df2 = df2.drop_duplicates(subset='Frame')
 
 
 dfjoined = df.set_index('Frame', drop=False).join(df2.set_index('Frame', drop=False), lsuffix='_saliency', rsuffix='_finetune')
