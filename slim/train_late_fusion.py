@@ -81,7 +81,7 @@ start = su.print_and_time('====================\nTraining porn  classifier...\n'
 classifier, tuning = su.new_classifier(linear=SVM_LINEAR, dual=SVM_DUAL, max_iter=SVM_MAX_ITER, min_gamma=min_gamma, scale_gamma=scale_gamma)
 print('params :', classifier.get_params().keys(), file=sys.stderr)
 #sys.exit(1)
-classifier_m = su.hyperoptimizer(classifier, tuning, max_iter=HYPER_MAX_ITER, n_jobs=HYPER_JOBS, group=not FLAGS.no_group)
+classifier_m = su.hyperoptimizer(classifier, tuning, max_iter=HYPER_MAX_ITER, n_jobs=HYPER_JOBS, group=True)
 
 classifier_m.fit(features, (labels==1.).astype(np.int), groups=None)
 print('Best params:', classifier_m.best_params_, file=sys.stderr)
