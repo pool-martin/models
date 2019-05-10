@@ -36,7 +36,7 @@ os.environ['JOBLIB_TEMP_FOLDER'] = "~/tmp"
 
 parser = argparse.ArgumentParser(prog='train_svm_layer.py', description='Predict the SVM decision.')
 parser.add_argument('--input_model', type=str, required=True, help='input trained model, in pickle format.')
-parser.add_argument('--input_test', type=str, required=True, help='input file with the test data, in pickle format.')
+parser.add_argument('--input_dir', type=str, required=True, help='input file with the test data, in pickle format.')
 parser.add_argument('--output_predictions', type=str , help='input file with the test data, in isbi challenge format (default=stdout).')
 parser.add_argument('--output_metrics', type=str, help='input file with the test data, in text format (default=stdout).')
 parser.add_argument('--output_images', type=str, help='input file with the test data, in text format (default=stdout).')
