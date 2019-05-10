@@ -62,6 +62,7 @@ HYPER_JOBS = FLAGS.jobs
 first = start = su.print_and_time('Reading training data...', file=sys.stderr)
 input_file = os.path.join(FLAGS.input_dir, 'joint.train_and_eval.predictions.pkl')
 df = pd.read_pickle(input_file)
+print('columns: ', list(df.columns.values))
 
 num_samples = len(df.index)
 min_gamma   = np.floor(np.log2(1.0/num_samples)) - 4.0
