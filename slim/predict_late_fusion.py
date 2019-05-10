@@ -66,7 +66,7 @@ features = df[['prob_porn_saliency', 'score_porn_saliency', 'prob_porn_finetune'
 num_samples = len(image_ids)
 
 start = su.print_and_time('Preprocessing test data...', past=start, file=sys.stderr)
-features = preprocessor.transform(features)
+#features = preprocessor.transform(features)
 
 # "Probabilities" should come between quotes here
 # Only if the scores are true logits the probabilities will be consistent
