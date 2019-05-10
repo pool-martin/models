@@ -176,7 +176,7 @@ df2 = pd.read_csv(os.path.join(FLAGS.output_predictions, 'finetune.test.predicti
 df2 = df2.sort_values(by='Frame')
 
 
-dfjoined = df.set_index('Frame').join(df2.set_index('Frame'), lsuffix='_saliency', rsuffix='_finetune')
+dfjoined = df.set_index('Frame', drop=False).join(df2.set_index('Frame', drop=False), lsuffix='_saliency', rsuffix='_finetune')
 dfjoined.dropna(axis=0, how='any', thresh=None, subset=None, inplace=True)
 
 print('\n joined', end='', file=sys.stderr)
