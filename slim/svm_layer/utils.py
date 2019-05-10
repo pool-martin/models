@@ -93,7 +93,7 @@ def read_pickled_data(filename) :
     feature_size = sizes[1]
     #Bellow we have a workaround to fix a defect when I created the files that stored the results of network
     if 'finetune' in filename:
-         feature_size = feature_size -2
+        feature_size = feature_size -2
         num_samples = num_samples * 2
 
 #    num_classes = sizes[2]
