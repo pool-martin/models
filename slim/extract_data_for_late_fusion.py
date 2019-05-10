@@ -43,7 +43,8 @@ parser.add_argument('--input_split', type=str, required=True, help='input split 
 FLAGS = parser.parse_args()
 
 first = start = su.print_and_time('Reading trained model...', file=sys.stderr)
-model_file = open(FLAGS.input_model, 'rb')
+input_model = os.path.join('/Exp/2kporn/art/inception_v4', FLAGS.input_split, 'saliency/svm.models/svm.model')
+model_file = open(input_model, 'rb')
 preprocessor = pickle.load(model_file)
 classifier_m = pickle.load(model_file)
 model_file.close()
@@ -100,8 +101,14 @@ for i in range(len(image_ids)) :
 outfile.close()
 
 ##########################################
-start = su.print_and_time('Extract for finetune experiment ...\n', past=start, file=sys.stderr)
+start = su.print_and_time('\n\n\n##################\nExtract for finetune experiment ...\n', past=start, file=sys.stderr)
 
+first = start = su.print_and_time('Reading trained model...', file=sys.stderr)
+input_model = os.path.join('/Exp/2kporn/art/inception_v4', FLAGS.input_split, 'finetune/svm.models/svm.model')
+model_file = open(input_model, 'rb')
+preprocessor = pickle.load(model_file)
+classifier_m = pickle.load(model_file)
+model_file.close()
 
 input_training = os.path.join('/Exp/2kporn/art/inception_v4', FLAGS.input_split, 'finetune/svm.features')
 ids_train, labels_train, features_train = su.read_pickled_data(os.path.join(input_training, 'feats.train'))
@@ -109,7 +116,7 @@ ids_val, labels_val, features_val = su.read_pickled_data(os.path.join(input_trai
 ids_test, labels_test, features_test = su.read_pickled_data(os.path.join(input_training, 'feats.test'))
 
 start = su.print_and_time('', past=start, file=sys.stderr)
-ids = np.append(ids_train, ids_val)
+image_ids = np.append(ids_train, ids_val)
 labels = np.append(labels_train, labels_val)
 features = np.append(features_train, features_val, axis=0)
 
