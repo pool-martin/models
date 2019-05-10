@@ -34,7 +34,7 @@ import pandas as pd
 
 from svm_layer import utils as su
 
-os.environ['JOBLIB_TEMP_FOLDER'] = "/data/tmp"
+os.environ['JOBLIB_TEMP_FOLDER'] = "~/tmp"
 
 parser = argparse.ArgumentParser(prog='train_svm_layer.py', description='Predict the SVM decision.')
 parser.add_argument('--input_dir', type=str, required=True, help='input file with the training data, in pickle format.')
