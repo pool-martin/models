@@ -29,6 +29,7 @@ import sklearn.decomposition
 import sklearn.gaussian_process
 import sklearn.model_selection
 import sklearn.preprocessing
+import pandas as pd
 
 from svm_layer import utils as su
 
