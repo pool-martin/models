@@ -49,9 +49,7 @@ FLAGS = parser.parse_args()
 
 first = start = su.print_and_time('Reading trained model...', file=sys.stderr)
 model_file = open(FLAGS.input_model, 'rb')
-preprocessor = pickle.load(model_file)
 classifier_m = pickle.load(model_file)
-#classifier_k = pickle.load(model_file)
 model_file.close()
 
 start = su.print_and_time('Reading test data...',  past=start, file=sys.stderr)
@@ -91,7 +89,7 @@ if not os.path.exists(output_dir):
 
 outfile = open(FLAGS.output_predictions, 'w') if FLAGS.output_predictions else sys.stdout
 for i in range(len(image_ids)) :
-  print(image_ids[i].decode("utf-8"), labels[i], predictions_m[i], confidence_scores_m[i], sep=',', file=outfile)
+  print(image_ids[i], labels[i], predictions_m[i], confidence_scores_m[i], sep=',', file=outfile)
 
 outfile.close()
 metfile = open(FLAGS.output_metrics, 'w') if FLAGS.output_metrics else sys.stderr
