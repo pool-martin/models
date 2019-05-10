@@ -52,9 +52,9 @@ model_file.close()
 first = start = su.print_and_time('Reading train data...', file=sys.stderr)
 
 input_training = os.path.join('/Exp/2kporn/art/inception_v4', FLAGS.input_split, 'saliency/svm.features')
-ids_train, labels_train, features_train, probs_train = su.read_pickled_data(os.path.join(input_training, 'feats.train'))
-ids_val, labels_val, features_val, probs_val = su.read_pickled_data(os.path.join(input_training, 'feats.validation'))
-ids_test, labels_test, features_test, probs_test = su.read_pickled_data(os.path.join(input_training, 'feats.test'))
+ids_train, labels_train, features_train = su.read_pickled_data(os.path.join(input_training, 'feats.train'))
+ids_val, labels_val, features_val = su.read_pickled_data(os.path.join(input_training, 'feats.validation'))
+ids_test, labels_test, features_test = su.read_pickled_data(os.path.join(input_training, 'feats.test'))
 
 start = su.print_and_time('', past=start, file=sys.stderr)
 image_ids = np.append(ids_train, ids_val)
