@@ -91,8 +91,11 @@ def read_pickled_data(filename) :
     sizes = pickle.load(source)
     num_samples = sizes[0]
     feature_size = sizes[1]
+    #Bellow we have a workaround to fix a defect when I created the files that stored the results of network
     if 'finetune' in filename:
          feature_size = feature_size -2
+        num_samples = num_samples * 2
+
 #    num_classes = sizes[2]
     print("num_samples: %d feature_size: %d " % (num_samples, feature_size))
 	
