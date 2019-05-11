@@ -96,7 +96,7 @@ for i in range(len(image_ids)) :
 outfile.close()
 
 outfile = open(os.path.join(FLAGS.output_predictions, 'saliency.test.predictions'), 'w') if FLAGS.output_predictions else sys.stdout
-for i in range(len(image_ids)) :
+for i in range(len(ids_test)) :
   print(ids_test[i].decode("utf-8"), labels_test[i], predictions_test[i], confidence_scores_test[i], sep=',', file=outfile)
 outfile.close()
 
@@ -144,7 +144,7 @@ for i in range(len(image_ids)) :
 outfile.close()
 
 outfile = open(os.path.join(FLAGS.output_predictions, 'finetune.test.predictions'), 'w') if FLAGS.output_predictions else sys.stdout
-for i in range(len(image_ids)) :
+for i in range(len(ids_test)) :
   print(ids_test[i].decode("utf-8"), labels_test[i], predictions_test[i], confidence_scores_test[i], sep=',', file=outfile)
 outfile.close()
 
