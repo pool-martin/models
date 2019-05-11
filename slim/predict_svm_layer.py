@@ -249,6 +249,7 @@ try :
     #  df = pd.read_csv(FLAGS.output_predictions, names=['Frame', 'prob_porn', 'prob_nonporn', 'score_porn', 'score_nonporn'])
     df = pd.read_csv(FLAGS.output_predictions, names=['Frame', 'previous_labels', 'prob_porn', 'score_porn'])
     print('\n Could read the csv', end='', file=sys.stderr)
+    df.drop_duplicates(subset="Frame")
     df = df.sort_values(by='Frame')
     print('\n Sorted by frame', end='', file=sys.stderr)
     def compare(row):
