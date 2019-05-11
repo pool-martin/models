@@ -161,7 +161,7 @@ df2 = df2.drop_duplicates(subset='Frame')
 
 
 dfjoined = df.set_index('Frame', drop=False).join(df2.set_index('Frame', drop=False), lsuffix='_saliency', rsuffix='_finetune')
-dfjoined.dropna(axis=0, how='any', thresh=None, subset=None, inplace=True)
+# dfjoined.dropna(axis=0, how='any', thresh=None, subset=None, inplace=True)
 
 print('\n joined', end='', file=sys.stderr)
 
@@ -173,13 +173,16 @@ print('=================\n process test files', end='', file=sys.stderr)
 df = pd.read_csv(os.path.join(FLAGS.output_predictions, 'saliency.test.predictions'), names=['Frame', 'previous_labels', 'prob_porn', 'score_porn'])
 df = df.sort_values(by='Frame')
 print('\n Sorted by frame', end='', file=sys.stderr)
+df = df.drop_duplicates(subset='Frame')
 
 df2 = pd.read_csv(os.path.join(FLAGS.output_predictions, 'finetune.test.predictions'), names=['Frame', 'previous_labels', 'prob_porn', 'score_porn'])
 df2 = df2.sort_values(by='Frame')
+df2 = df2.drop_duplicates(subset='Frame')
 
 
-dfjoined = df.set_index('Frame', drop=False).join(df2.set_index('Frame', drop=False), lsuffix='_saliency', rsuffix='_finetune')
-dfjoined.dropna(axis=0, how='any', thresh=None, subset=None, inplace=True)
+dfjoined = df.set_index('Frame', drop=False).join(df2.set_index('Frame', drop=False), on='Frame', how='left', lsuffix='_saliency', rsuffix='_finetune')
+#dfjoined.dropna(axis=0, how='any', thresh=None, subset=None, inplace=True)
+dfjoined.fillna(dfjoined.mean(), inplace=True)
 
 print('\n joined', end='', file=sys.stderr)
 
