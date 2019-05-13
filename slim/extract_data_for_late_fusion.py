@@ -148,14 +148,16 @@ for i in range(len(ids_test)) :
   print(ids_test[i].decode("utf-8"), labels_test[i], predictions_test[i], confidence_scores_test[i], sep=',', file=outfile)
 outfile.close()
 
-#############################################
+##############################################
 
 df = pd.read_csv(os.path.join(FLAGS.output_predictions, 'saliency.train_and_val.predictions'), names=['Frame', 'previous_labels', 'prob_porn', 'score_porn'])
+#df = pd.read_csv(os.path.join('/Exp/2kporn/art/inception_v4/', FLAGS.input_split, '/saliency/svm.predictions/test.prediction.txt.k_test'), names=['Frame', 'previous_labels', 'prob_porn', 'score_porn'])
 df = df.sort_values(by='Frame')
 df = df.drop_duplicates(subset='Frame')
 print('\n Sorted by frame', end='', file=sys.stderr)
 
 df2 = pd.read_csv(os.path.join(FLAGS.output_predictions, 'finetune.train_and_val.predictions'), names=['Frame', 'previous_labels', 'prob_porn', 'score_porn'])
+#df2 = pd.read_csv(os.path.join('/Exp/2kporn/art/inception_v4/', FLAGS.input_split, '/finetune/svm.predictions/test.prediction.txt.k_test'), names=['Frame', 'previous_labels', 'prob_porn', 'score_porn'])
 df2 = df2.sort_values(by='Frame')
 df2 = df2.drop_duplicates(subset='Frame')
 

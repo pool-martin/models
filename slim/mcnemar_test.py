@@ -54,17 +54,18 @@ import pandas as pd
 
 df = pd.read_csv(FLAGS.file_1)
 df = df.sort_values(by='Frame')
-print('\n Sorted by frame', end='', file=sys.stderr)
+print('\n df1 columns: ', df.columns.values, end='', file=sys.stderr)
+
 
 df2 = pd.read_csv(FLAGS.file_2)
 df2 = df2.sort_values(by='Frame')
-
+print(' df2 columns: ', df.columns.values, end='', file=sys.stderr)
 
 def compare(row):
     return int(row['k_prob_g5'])
 
-df['result_model_1'] = df.apply(compare, axis=1)
-df2['result_model_2'] = df2.apply(compare, axis=1)
+df['result'] = df.apply(compare, axis=1)
+df2['result'] = df2.apply(compare, axis=1)
 
 def compare2(row):
     return int(row['previous_labels'])
@@ -72,7 +73,11 @@ df['gt_labels'] = df.apply(compare2, axis=1)
 
 print('\n Created final_results', end='', file=sys.stderr)
 
-dfjoined = df.set_index('Frame').join(df2.set_index('Frame'), lsuffix='_model_1', rsuffix='_model_2')
+
+dfjoined = df.set_index('Frame', drop=False).join(df2.set_index('Frame', drop=False), on='Frame', how='inner', lsuffix='_model_1', rsuffix='_model_2')
+print('dfjoined columns: ', dfjoined.columns.values)
+print(dfjoined.head(2))
+dfjoined = dfjoined.dropna()
 
 print('\n joined', end='', file=sys.stderr)
 
