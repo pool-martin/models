@@ -17,7 +17,7 @@
 #  
 
 ''' 
-Create Optical Flow Splits to be used in 2D CNN models. 
+Create Optical Flow Splits to be used in 2D and 3D CNN models. 
 - Authors: Joao Paulo Martin (joao.paulo.pmartin@gmail.com)
 '''
 
@@ -27,7 +27,7 @@ import decimal
 from utils import opencv
 
 def load_args():
-    ap = argparse.ArgumentParser(description='Create Splits to be used in 2D CNN models.')
+    ap = argparse.ArgumentParser(description='Create Splits to be used in 2D and 3D CNN models.')
     ap.add_argument('-d', '--dataset-dir',
                                     dest='dataset_dir',
                                     help='path to dataset files.',
@@ -317,27 +317,27 @@ def create_splits(args):
         negative_test_set = f.readlines()
 
 
-    full_dir_path = os.path.join(args.output_path, args.split_number, '2D', '{}_fps'.format(args.sample_rate), args.engine_type, 'w_{}_l_{}'.format(args.snippet_width, args.snippet_length))
+    full_dir_path = os.path.join(args.output_path, args.split_number, '3D', '{}_fps'.format(args.sample_rate), args.engine_type, 'w_{}_l_{}'.format(args.snippet_width, args.snippet_length))
     command = "mkdir -p " + full_dir_path
     print('\n', command)
     call(command, shell=True)
 
-    create_video_split('network_training_set', '2D', positive_network_training_set, negative_network_training_set, args)
-    create_video_split('network_validation_set', '2D', positive_network_validation_set, negative_network_validation_set, args)
+    create_video_split('network_training_set', '3D', positive_network_training_set, negative_network_training_set, args)
+    create_video_split('network_validation_set', '3D', positive_network_validation_set, negative_network_validation_set, args)
 
     print('################################ TEST SET ####################################')
 
-    create_video_split('test_set', '2D', positive_test_set, negative_test_set, args, split_test=True)
+    create_video_split('test_set', '3D', positive_test_set, negative_test_set, args, split_test=True)
     
-    # sets_3d_path = os.path.join(args.output_path, args.split_number, '3D', '{}_fps'.format(args.sample_rate), args.engine_type)
+    sets_3d_path = os.path.join(args.output_path, args.split_number, '3D', '{}_fps'.format(args.sample_rate), args.engine_type)
 
-    # sets_2d_path = os.path.join(args.output_path, args.split_number, '2D', '{}_fps'.format(args.sample_rate), args.engine_type)
-    # command = "mkdir -p " + sets_2d_path
-    # print('\n', command)
-    # call(command, shell=True)
-    # command = 'cp {}/*.txt {}'.format(sets_3d_path, sets_2d_path)
-    # print('\n', command)
-    # call(command, shell=True)
+    sets_2d_path = os.path.join(args.output_path, args.split_number, '2D', '{}_fps'.format(args.sample_rate), args.engine_type)
+    command = "mkdir -p " + sets_2d_path
+    print('\n', command)
+    call(command, shell=True)
+    command = 'cp {}/*.txt {}'.format(sets_3d_path, sets_2d_path)
+    print('\n', command)
+    call(command, shell=True)
 
 def main():
     print('> Create splits from videos -', time.asctime( time.localtime(time.time())))
