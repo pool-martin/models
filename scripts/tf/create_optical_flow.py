@@ -39,8 +39,8 @@ def load_args():
     return args
 
 def processOpticalFlow(args, video, frame, next_frame):
-    im1 = np.array(Image.open(os.path.join(args.output_path, video, '{}.jpg'.format(frame))))
-    im2 = np.array(Image.open(os.path.join(args.output_path, video, '{}.jpg'.format(next_frame))))
+    im1 = np.array(Image.open(os.path.join(args.dataset_dir, 'frames', video, '{}.jpg'.format(frame))))
+    im2 = np.array(Image.open(os.path.join(args.dataset_dir, 'frames', video, '{}.jpg'.format(next_frame))))
     im1 = im1.astype(float) / 255.
     im2 = im2.astype(float) / 255.
 
