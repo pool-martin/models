@@ -80,6 +80,10 @@ def file_exists(args, video, frame_identifier):
 
 def processVideoFrames(args, video, video_frames):
     global number_of_videos
+    output_dir = os.path.join(args.output_path, video)
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
     pairs = [[video_frames[i], video_frames[i + 1]] for i in range(len(video_frames) - 1)]
     for [frame, next_frame] in pairs:
         processOpticalFlow(args, video, frame, next_frame)
