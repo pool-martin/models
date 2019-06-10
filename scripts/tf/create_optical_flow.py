@@ -103,7 +103,7 @@ def extract(args, all_set):
             video = 'v{}{}'.format(class_type, str(i).zfill(6))
             video_frames[video] = [frame for frame in all_set if video in frame]
 
-    Parallel(n_jobs=10)(delayed(processVideoFrames)(args, video, video_frames[video]) for video in video_frames.keys())
+    Parallel(n_jobs=1)(delayed(processVideoFrames)(args, video, video_frames[video]) for video in video_frames.keys())
 
     
 
