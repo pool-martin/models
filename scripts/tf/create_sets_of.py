@@ -254,14 +254,15 @@ def select_video_frames(video_name, split_type, args, split_test):
             frames.append(frame_entry)
 
     #including last frame for optical flow calculation of the last second.
-    last_position = float(frame_count -1) / float(fps)
+    last_frame = frame_count -2
+    last_position = float(last_frame) / float(fps)
     last_localization_label = 0 if 'vNonPorn' in video_name else define_localization_label(labels, last_position)
-    last_frame_entry = "{}_{}_{}".format(video_name, last_localization_label, frame_count -1)
+    last_frame_entry = "{}_{}_{}".format(video_name, last_localization_label, last_frame)
     frames.append(last_frame_entry)
     snippet_folder = os.path.join(args.output_path, args.split_number, split_type, '{}_fps'.format(args.sample_rate), args.engine_type, 'w_{}_l_{}'.format(args.snippet_width, args.snippet_length), video_name)
     last_snippet_path = os.path.join(snippet_folder, last_frame_entry + '.txt')
     with open(last_snippet_path, "w") as f:
-        f.write("%s\n" % str(frame_count -1))
+        f.write("%s\n" % str(last_frame))
     return frames
 
 def create_video_split(name_set, split_type, positive_set, negative_set, args, split_test=False):
