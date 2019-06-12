@@ -254,7 +254,7 @@ def select_video_frames(video_name, split_type, args, split_test):
             frames.append(frame_entry)
 
     #including last frame for optical flow calculation of the last second.
-    last_frame = frame_count -3
+    last_frame = frame_count - 10 if fps > 20 else frame_count - 1
     last_position = float(last_frame) / float(fps)
     last_localization_label = 0 if 'vNonPorn' in video_name else define_localization_label(labels, last_position)
     last_frame_entry = "{}_{}_{}".format(video_name, last_localization_label, last_frame)
