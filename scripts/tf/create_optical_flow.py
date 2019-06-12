@@ -86,7 +86,8 @@ def processVideoFrames(args, video, video_frames):
 
     pairs = [[video_frames[i], video_frames[i + 1]] for i in range(len(video_frames) - 1)]
     for [frame, next_frame] in pairs:
-        processOpticalFlow(args, video, frame, next_frame)
+        if not file_exists(args, video, frame):
+            processOpticalFlow(args, video, frame, next_frame)
     number_of_videos += 1
     print('number_of_videos:', number_of_videos)
 
