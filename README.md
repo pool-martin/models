@@ -123,7 +123,7 @@ total steps = v4: 221394 v1: 70846
 python slim/eval_image_classifier.py  --base_dir=/Exp/2kporn/art/inception_v4/s1_a/finetune --dataset_dir=/DL/2kporn/tfrecords/s1_a --dataset_name=porn2k     --dataset_split_name=validation --model_name=inception_v4 --eval_image_size=224 --batch_size=10 --gpu_to_use=0 
 
 
-python slim/predict_image_classifier.py --alsologtostderr --base_dir=/Exp/2kporn/art/inception_v4/s3_a/imagenet_extract --checkpoint_path=/DL/initial_weigths/inception_v4/rgb_imagenet/model.ckpt --dataset_dir=/DL/2kporn/tfrecords/s3_a --task_name=label --dataset_name=porn2k --model_name=inception_v4 --preprocessing_name=porn2k --id_field_name=id --eval_replicas=1 --eval_image_size=224 --pool_features=none --pool_scores=none --extract_features --inception_layer=Mixed_7c --checkpoint_exclude_scopes=InceptionV4/Logits,InceptionV4/AuxLogits --add_scores_to_features=probs --output_format=pickle --normalize_per_image=1 --batch_size=160 --gpu_to_use=1
+python slim/predict_image_classifier.py --alsologtostderr --base_dir=/Exp/2kporn/art/inception_v4/s1_a/imagenet_extract --checkpoint_path=/DL/initial_weigths/inception_v4/rgb_imagenet/model.ckpt --dataset_dir=/DL/2kporn/tfrecords/s3_a --task_name=label --dataset_name=porn2k --model_name=inception_v4 --preprocessing_name=porn2k --id_field_name=id --eval_replicas=1 --eval_image_size=224 --pool_features=none --pool_scores=none --extract_features --inception_layer=Mixed_7c --checkpoint_exclude_scopes=InceptionV4/Logits,InceptionV4/AuxLogits --add_scores_to_features=probs --output_format=pickle --normalize_per_image=1 --batch_size=160 --gpu_to_use=1
 
 
 python slim/train_svm_layer.py --input_training /Exp/2kporn/art/inception_v4/s1_a/finetune/svm.features --output_model /Exp/2kporn/art/inception_v4/s1_a/finetune/svm.models/svm.model --jobs 5 --svm_method LINEAR_DUAL --preprocess NONE --max_iter_hyper 13
@@ -159,3 +159,99 @@ python slim/train_svm_layer.py --input_training /Exp/2kporn/art/inception_v4/s1_
 
 
 python slim/predict_svm_layer.py --input_model /Exp/2kporn/art/inception_v4/s1_a/saliency/svm.models/svm.model --input_test /Exp/2kporn/art/inception_v4/s1_a/saliency/svm.features/feats.test --pool_by_id none  --output_predictions /Exp/2kporn/art/inception_v4/s1_a/saliency/svm.predictions/test.prediction.txt --output_metrics /Exp/2kporn/art/inception_v4/s1_a/saliency/svm.predictions/test.metrics.txt --output_images /Exp/2kporn/art/inception_v4/s1_a/saliency/svm.predictions/test.images --compute_rolling_window
+python slim/train_image_classifier.py --train_dir=/Exp/2kporn/art/inception_v4/s3_b/saliency/checkpoints --dataset_dir=/DL/2kporn/saliency_tfrecords/s3_b --dataset_name=porn2k     --dataset_split_name=train     --model_name=inception_v4     --checkpoint_path=/DL/initial_weigths/inception_v4/rgb_imagenet/model.ckpt --checkpoint_exclude_scopes=InceptionV4/Logits,InceptionV4/AuxLogits --save_interval_secs=3600     --optimizer=rmsprop     --normalize_per_image=1  --train_image_size=224   --max_number_of_steps=217224 --experiment_tag="Experiment: Saliency; Model: Inceptionv4; Normalization: mode 1" --experiment_file=experiment.meta --batch_size=48 --gpu_to_use=1
+
+python slim/eval_image_classifier.py  --base_dir=/Exp/2kporn/art/inception_v4/s3_b/saliency --dataset_dir=/DL/2kporn/saliency_tfrecords/s3_b --dataset_name=porn2k     --dataset_split_name=validation --model_name=inception_v4 --eval_image_size=224 --batch_size=10 --gpu_to_use=0
+
+
+python slim/predict_image_classifier.py --alsologtostderr --base_dir=/Exp/2kporn/art/inception_v4/s2_b/saliency --dataset_dir=/DL/2kporn/saliency_tfrecords/s2_b --task_name=label --dataset_name=porn2k --model_name=inception_v4 --preprocessing_name=porn2k --id_field_name=id --eval_replicas=1 --eval_image_size=224 --pool_features=none --pool_scores=none --extract_features --add_scores_to_features=probs --output_format=pickle --normalize_per_image=1 --batch_size=600 --gpu_to_use=1
+
+
+
+python slim/train_svm_layer.py --input_training /Exp/2kporn/art/inception_v4/s1_a/saliency/svm.features --output_model /Exp/2kporn/art/inception_v4/s1_a/saliency/svm.models/svm.model --jobs 5 --svm_method LINEAR_DUAL --preprocess NONE --max_iter_hyper 13
+
+
+python slim/predict_svm_layer.py --input_model /Exp/2kporn/art/inception_v4/s1_a/saliency/svm.models/svm.model --input_test /Exp/2kporn/art/inception_v4/s1_a/saliency/svm.features/feats.test --pool_by_id none  --output_predictions /Exp/2kporn/art/inception_v4/s1_a/saliency/svm.predictions/test.prediction.txt --output_metrics /Exp/2kporn/art/inception_v4/s1_a/saliency/svm.predictions/test.metrics.txt --output_images /Exp/2kporn/art/inception_v4/s1_a/saliency/svm.predictions/test.images --compute_rolling_window
+
+
+python scripts/results_2_etf.py --output_predictions /Exp/2kporn/art/inception_v4/s1_a/saliency/svm.predictions/test.prediction.txt --output_path /Exp/2kporn/art/inception_v4/s1_a/saliency/etf --fps_sampled 1 --set_to_process test --column k_prob_g5 --fold_to_process s1_a
+
+
+python etf_analyze.py /Exp/2kporn/art/inception_v4/s1_a/saliency/etf/test/ground_truth/all.txt /Exp/2kporn/art/inception_v4/s1_a/saliency/etf/test/etf_list.txt
+
+
+
+
+python slim/predict_svm_layer.py --input_model /Exp/2kporn/art/inception_v4/s2_b/saliency/svm.models/svm.model --input_test /Exp/2kporn/art/inception_v4/s2_b/saliency/svm.features/feats.test --pool_by_id none  --output_predictions /Exp/2kporn/art/inception_v4/s2_b/saliency/svm.predictions/test.prediction.txt --output_metrics /Exp/2kporn/art/inception_v4/s2_b/saliency/svm.predictions/test.metrics.txt --output_images /Exp/2kporn/art/inception_v4/s2_b/saliency/svm.predictions/test.images --compute_rolling_window
+
+
+python scripts/results_2_etf.py --output_predictions /Exp/2kporn/art/inception_v4/s2_b/saliency/svm.predictions/test.prediction.txt --output_path /Exp/2kporn/art/inception_v4/s2_b/saliency/etf --fps_sampled 1 --set_to_process test --column k_prob_g5 --fold_to_process s2_b
+
+
+python etf_analyze.py /Exp/2kporn/art/inception_v4/s2_b/saliency/etf/test/ground_truth/all.txt /Exp/2kporn/art/inception_v4/s2_b/saliency/etf/test/etf_list.txt
+
+
+
+jp@33a773e3515d:/workspace$ python slim/mcnemar_test.py --file_1 /Exp/2kporn/art/inception_v4/s2_b/saliency/svm.predictions/test.prediction.txt.k_test --file_2 /Exp/2kporn/art/inception_v4/s2_b/finetune/svm.predictions/test.prediction.txt.k_test 
+
+
+
+python slim/extract_data_for_late_fusion.py --input_model /Exp/2kporn/art/inception_v4/s2_b/saliency/svm.models/svm.model --output_predictions /Exp/2kporn/art/inception_v4/s1_a/saliency/latefusion.features --input_split s1_a
+
+
+python slim/train_late_fusion.py --input_dir /Exp/2kporn/art/inception_v4/s1_a/saliency/latefusion.features --output_model /Exp/2kporn/art/inception_v4/s1_a/saliency/latefusion.models/latefusion.LINEAR.model --jobs 5 --svm_method LINEAR_DUAL --max_iter_hyper 13
+
+
+python slim/predict_late_fusion.py --input_model /Exp/2kporn/art/inception_v4/s1_a/saliency/latefusion.models/latefusion.LINEAR.model --input_dir /Exp/2kporn/art/inception_v4/s1_a/saliency/latefusion.features --pool_by_id none  --output_predictions /Exp/2kporn/art/inception_v4/s1_a/saliency/latefusion.predictions/test.prediction.txt --output_metrics /Exp/2kporn/art/inception_v4/s1_a/saliency/latefusion.predictions/test.metrics.txt --output_images /Exp/2kporn/art/inception_v4/s1_a/saliency/latefusion.predictions/test.images --compute_rolling_window
+
+python slim/extract_data_for_late_fusion.py --input_model /Exp/2kporn/art/inception_v4/s3_a/saliency/svm.models/svm.model --output_predictions /Exp/2kporn/art/inception_v4/s3_a/saliency/latefusion.features --input_split s3_a
+
+
+python slim/mcnemar_test.py --file_1 /Exp/2kporn/art/inception_v4/s1_b/saliency/svm.predictions/test.prediction.txt.k_test --file_2 /Exp/2kporn/art/nception_v4/s1_b/finetune/svm.predictions/test.prediction.txt.k_test
+
+
+python slim/predict_late_fusion.py --input_model /Exp/2kporn/art/inception_v4/s1_b/saliency/latefusion.models/latefusion.LINEAR.model --input_dir /Exp/2kporn/art/inception_v4/s1_b/saliency/latefusion.features --pool_by_id none  --output_predictions /Exp/2kporn/art/inception_v4/s1_b/saliency/latefusion.predictions/test.prediction.txt --output_metrics /Exp/2kporn/art/inception_v4/s1_b/saliency/latefusion.predictions/test.metrics.txt --output_images /Exp/2kporn/art/inception_v4/s1_b/saliency/latefusion.predictions/test.images --compute_rolling_window
+
+
+python scripts/results_2_etf.py --output_predictions /Exp/2kporn/art/inception_v4/s1_b/saliency/latefusion.predictions/test.prediction.txt --output_path /Exp/2kporn/art/inception_v4/s2_b/saliency/latefusion.etf --fps_sampled 1 --set_to_process test --column k_prob_g5 --fold_to_process s1_b
+
+
+python slim/train_svm_layer.py --input_training /Exp/2kporn/art/inception_v4/s2_b/saliency/svm.features --output_model /Exp/2kporn/art/inception_v4/s2_b/saliency/svm.models/svm.model --jobs 5 --svm_method LINEAR_DUAL --preprocess NONE --max_iter_hyper 13
+
+
+
+python slim/predict_image_classifier.py --alsologtostderr --base_dir=/Exp/2kporn/art/inception_v4/s3_b/finetune --dataset_dir=/DL/2kporn/tfrecords/2D/s3_b --task_name=label --dataset_name=porn2k --model_name=inception_v4 --preprocessing_name=porn2k --id_field_name=id --eval_replicas=1 --eval_image_size=224 --pool_features=none --pool_scores=none --extract_features --add_scores_to_features=probs --output_format=pickle --normalize_per_image=1 --batch_size=160 --gpu_to_use=0
+
+
+python slim/predict_image_classifier.py --alsologtostderr --base_dir=/Exp/2kporn/art/inception_v4/s2_b/saliency --dataset_dir=/DL/2kporn/saliency_tfrecords/s2_b --task_name=label --dataset_name=porn2k --model_name=inception_v4 --preprocessing_name=porn2k --id_field_name=id --eval_replicas=1 --eval_image_size=224 --pool_features=none --pool_scores=none --extract_features --add_scores_to_features=probs --output_format=pickle --normalize_per_image=1 --batch_size=600 --gpu_to_use=1
+
+
+###############
+Optical Flow
+
+python slim/predict_svm_layer.py --input_model /Exp/2kporn/art/inception_v4/s1_a/opticalflow/svm.models/svm.model --input_test /Exp/2kporn/art/inception_v4/s1_a/opticalflow/svm.features/feats.test --pool_by_id none  --output_predictions /Exp/2kporn/art/inception_v4/s1_a/opticalflow/svm.predictions/test.prediction.txt --output_metrics /Exp/2kporn/art/inception_v4/s1_a/opticalflow/svm.predictions/test.metrics.txt --output_images /Exp/2kporn/art/inception_v4/s1_a/opticalflow/svm.predictions/test.images --compute_rolling_window
+
+python scripts/results_2_etf.py --output_predictions /Exp/2kporn/art/inception_v4/s1_a/opticalflow/svm.predictions/test.prediction.txt --output_path /Exp/2kporn/art/inception_v4/s1_a/opticalflow/etf --fps_sampled 1 --set_to_process test --column k_prob_g5 --fold_to_process s1_a
+
+
+python etf_analyze.py /Exp/2kporn/art/inception_v4/s1_a/opticalflow/etf/test/ground_truth/all.txt /Exp/2kporn/art/inception_v4/s1_a/opticalflow/etf/test/etf_list.txt
+
+###### 
+Fusion
+
+jp@33a773e3515d:/workspace$ python slim/mcnemar_test.py --file_1 /Exp/2kporn/art/inception_v4/s1_a/finetune/svm.predictions/test.prediction.txt.k_test --file_2 /Exp/2kporn/art/inception_v4/s1_a/opticalflow/svm.predictions/test.prediction.txt.k_test 
+
+
+
+python slim/extract_data_for_late_fusion.py --input_model /Exp/2kporn/art/inception_v4/s1_a/opticalflow/svm.models/svm.model --output_predictions /Exp/2kporn/art/inception_v4/s1_a/fusion_opticalflow/latefusion.features --experiment opticalflow --input_split s1_a
+
+
+python slim/train_late_fusion.py --input_dir /Exp/2kporn/art/inception_v4/s1_a/fusion_opticalflow/latefusion.features --output_model /Exp/2kporn/art/inception_v4/s1_a/fusion_opticalflow/latefusion.models/latefusion.LINEAR.model --jobs 5 --svm_method LINEAR_DUAL --max_iter_hyper 13
+
+
+python slim/predict_late_fusion.py --input_model /Exp/2kporn/art/inception_v4/s1_a/fusion_opticalflow/latefusion.models/latefusion.LINEAR.model --input_dir /Exp/2kporn/art/inception_v4/s1_a/fusion_opticalflow/latefusion.features --pool_by_id none  --output_predictions /Exp/2kporn/art/inception_v4/s1_a/fusion_opticalflow/latefusion.predictions/test.prediction.txt --output_metrics /Exp/2kporn/art/inception_v4/s1_a/fusion_opticalflow/latefusion.predictions/test.metrics.txt --output_images /Exp/2kporn/art/inception_v4/s1_a/fusion_opticalflow/latefusion.predictions/test.images --compute_rolling_window
+
+python scripts/results_2_etf.py --output_predictions /Exp/2kporn/art/inception_v4/s1_a/fusion_opticalflow/svm.predictions/test.prediction.txt --output_path /Exp/2kporn/art/inception_v4/s1_a/fusion_opticalflow/etf --fps_sampled 1 --set_to_process test --column k_prob_g5 --fold_to_process s1_a
+
+
+python etf_analyze.py /Exp/2kporn/art/inception_v4/s1_a/fusion_opticalflow/etf/test/ground_truth/all.txt /Exp/2kporn/art/inception_v4/s1_a/fusion_opticalflow/etf/test/etf_list.txt

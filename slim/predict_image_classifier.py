@@ -499,12 +499,15 @@ def extract():
         if FLAGS.extract_features :
           if FLAGS.add_scores_to_features!='none' :
             print_replica(next_id, next_lab, next_feats, next_preds)
-            # next_feats = np.concatenate((next_feats, next_scores), axis=0 if pooled_features else 1)
-          if pooled_features :
+          else:
             print_replica(next_id, next_lab, next_feats)
-          else :
-            for r in range(FLAGS.eval_replicas) :
-              print_replica(next_id, next_lab, next_feats[r])
+
+            # next_feats = np.concatenate((next_feats, next_scores), axis=0 if pooled_features else 1)
+#          if pooled_features :
+#            print_replica(next_id, next_lab, next_feats)
+#          else :
+#            for r in range(FLAGS.eval_replicas) :
+#              print_replica(next_id, next_lab, next_feats[r])
         else :
           if pooled_scores :
             list_ids.append(next_id)

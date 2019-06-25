@@ -29,19 +29,14 @@ import sklearn.decomposition
 import sklearn.gaussian_process
 import sklearn.model_selection
 import sklearn.preprocessing
-from statsmodels.sandbox.stats.runs import mcnemar
+from mlxtend.evaluate import mcnemar
+from mlxtend.evaluate import mcnemar_table
+
 from svm_layer import utils as su
 
 os.environ['JOBLIB_TEMP_FOLDER'] = "/data/tmp"
 
 parser = argparse.ArgumentParser(prog='train_svm_layer.py', description='Predict the SVM decision.')
-#parser.add_argument('--input_model', type=str, required=True, help='input trained model, in pickle format.')
-#parser.add_argument('--input_test', type=str, required=True, help='input file with the test data, in pickle format.')
-parser.add_argument('--output_predictions', type=str , help='input file with the test data, in isbi challenge format (default=stdout).')
-parser.add_argument('--output_metrics', type=str, help='input file with the test data, in text format (default=stdout).')
-parser.add_argument('--output_images', type=str, help='input file with the test data, in text format (default=stdout).')
-parser.add_argument('--pool_by_id', type=str, default='none', help='pool answers of contiguous identical ids: none (default), avg, max, xtrm')
-parser.add_argument('--compute_rolling_window', default=False, action='store_true', help='compute rolling_window')
 parser.add_argument('--file_1', type=str, default='none', help='pool answers of contiguous identical ids: none (default), avg, max, xtrm')
 parser.add_argument('--file_2', type=str, default='none', help='compute rolling_window')
 
@@ -52,37 +47,52 @@ first = start = su.print_and_time('Reading trained model...', file=sys.stderr)
 print('\n Starting pandas stuff', end='', file=sys.stderr)
 import pandas as pd
 
-df = pd.read_csv(FLAGS.file_1, names=['Frame', 'prob_porn', 'score_porn'])
-print('\n Could read the csv', end='', file=sys.stderr)
+#    df = pd.read_csv(FLAGS.output_predictions+".k_test", names=['index','Frame', 'previous_labels', 'prob_porn', 'score_porn', 'predictions', 'prob_porn_2', 'videos', 'k_pred_b1', 'k_pred_b3', 'k_pred_b5', 'k_pred_t1', 'k_pred_t3', 'k_pred_t5'])
+#    df = pd.read_csv(FLAGS.output_predictions+".k_test")
+#    #print('\n Could read the csv', end='', file=sys.stderr)
+#    df = df.sort_values(by='Frame')
+
+df = pd.read_csv(FLAGS.file_1)
 df = df.sort_values(by='Frame')
-print('\n Sorted by frame', end='', file=sys.stderr)
-def compare(row):
-    if row['prob_porn'] >= 0.5:
-        return 1
-    else:
-        return 0
-print('\n Created prediction', end='', file=sys.stderr)
+print('\n df1 columns: ', df.columns.values, end='', file=sys.stderr)
 
-df['predictions'] = df.apply(compare, axis=1)
 
-df2 = pd.read_csv(FLAGS.file_2, names=['Frame', 'prob_porn', 'score_porn'])
-print('\n Could read the csv', end='', file=sys.stderr)
+df2 = pd.read_csv(FLAGS.file_2)
 df2 = df2.sort_values(by='Frame')
-print('\n Sorted by frame', end='', file=sys.stderr)
-def compare(row):
-    if row['prob_porn'] >= 0.5:
-        return 1
-    else:
-        return 0
-print('\n Created prediction', end='', file=sys.stderr)
+print(' df2 columns: ', df.columns.values, end='', file=sys.stderr)
 
-df2['predictions'] = df2.apply(compare, axis=1)
+def compare(row):
+    return int(row['k_prob_g5'])
+
+df['result'] = df.apply(compare, axis=1)
+df2['result'] = df2.apply(compare, axis=1)
+
+def compare2(row):
+    return int(row['previous_labels'])
+df['gt_labels'] = df.apply(compare2, axis=1)
+
+print('\n Created final_results', end='', file=sys.stderr)
+
+
+dfjoined = df.set_index('Frame', drop=False).join(df2.set_index('Frame', drop=False), on='Frame', how='inner', lsuffix='_model_1', rsuffix='_model_2')
+print('dfjoined columns: ', dfjoined.columns.values)
+print(dfjoined.head(2))
+dfjoined = dfjoined.dropna()
+
+print('\n joined', end='', file=sys.stderr)
 
 print('\n Will run Mcnemar', end='', file=sys.stderr)
-res = mcnemar(df['predictions'].values, df2['predictions'].values, exact=False, correction=True)
 
-print(res, end='', file=sys.stderr)
+tb = mcnemar_table(y_target=dfjoined['gt_labels'].values, 
+                   y_model1=dfjoined['result_model_1'].values, 
+                   y_model2=dfjoined['result_model_2'].values)
 
+print(tb)
+
+chi2, p = mcnemar(ary=tb, exact=True)
+
+print('chi-squared:', chi2)
+print('p-value:', p)
 
 print('\n Total time ', end='', file=sys.stderr)
 _ = su.print_and_time('Done!\n', past=first, file=sys.stderr)
