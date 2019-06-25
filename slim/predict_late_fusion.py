@@ -57,9 +57,9 @@ input_file = os.path.join(FLAGS.input_dir, 'joint.test.predictions.pkl')
 df = pd.read_pickle(input_file)
 
 # 'previous_labels', 'prob_porn', 'score_porn'
-image_ids = df['Frame_saliency'].values
-labels = df['previous_labels_saliency'].values.astype(np.int)
-features = df[['prob_porn_saliency', 'score_porn_saliency', 'prob_porn_finetune', 'score_porn_finetune']].values
+image_ids = df['Frame_experiment'].values
+labels = df['previous_labels_experiment'].values.astype(np.int)
+features = df[['prob_porn_experiment', 'score_porn_experiment', 'prob_porn_finetune', 'score_porn_finetune']].values
 
 num_samples = len(image_ids)
 
