@@ -73,9 +73,9 @@ if not SVM_LINEAR :
     print('\tGamma: ', min_gamma, min_gamma+scale_gamma, file=sys.stderr)
 
 # 'previous_labels', 'prob_porn', 'score_porn'
-ids = df['Frame_saliency'].values
-labels = df['previous_labels_saliency'].values.astype(np.int)
-features = df[['prob_porn_saliency', 'score_porn_saliency', 'prob_porn_finetune', 'score_porn_finetune']].values
+ids = df['Frame_experiment'].values
+labels = df['previous_labels_experiment'].values.astype(np.int)
+features = df[['prob_porn_experiment', 'score_porn_experiment', 'prob_porn_finetune', 'score_porn_finetune']].values
 
 start = su.print_and_time('====================\nTraining porn  classifier...\n', past=start, file=sys.stderr)
 classifier, tuning = su.new_classifier(linear=SVM_LINEAR, dual=SVM_DUAL, max_iter=SVM_MAX_ITER, min_gamma=min_gamma, scale_gamma=scale_gamma)

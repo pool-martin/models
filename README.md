@@ -230,8 +230,12 @@ jp@33a773e3515d:/workspace$ python slim/mcnemar_test.py --file_1 /Exp/2kporn/art
 python slim/extract_data_for_late_fusion.py --input_model /Exp/2kporn/art/inception_v4/s1_a/opticalflow/svm.models/svm.model --output_predictions /Exp/2kporn/art/inception_v4/s1_a/fusion_opticalflow/latefusion.features --experiment opticalflow --input_split s1_a
 
 
-python slim/train_late_fusion.py --input_dir /Exp/2kporn/art/inception_v4/s1_a/opticalflow/latefusion.features --output_model /Exp/2kporn/art/inception_v4/s1_a/opticalflow/latefusion.models/latefusion.LINEAR.model --jobs 5 --svm_method LINEAR_DUAL --max_iter_hyper 13
+python slim/train_late_fusion.py --input_dir /Exp/2kporn/art/inception_v4/s1_a/fusion_opticalflow/latefusion.features --output_model /Exp/2kporn/art/inception_v4/s1_a/fusion_opticalflow/latefusion.models/latefusion.LINEAR.model --jobs 5 --svm_method LINEAR_DUAL --max_iter_hyper 13
 
 
-python slim/predict_late_fusion.py --input_model /Exp/2kporn/art/inception_v4/s1_a/opticalflow/latefusion.models/latefusion.LINEAR.model --input_dir /Exp/2kporn/art/inception_v4/s1_a/opticalflow/latefusion.features --pool_by_id none  --output_predictions /Exp/2kporn/art/inception_v4/s1_a/opticalflow/latefusion.predictions/test.prediction.txt --output_metrics /Exp/2kporn/art/inception_v4/s1_a/opticalflow/latefusion.predictions/test.metrics.txt --output_images /Exp/2kporn/art/inception_v4/s1_a/opticalflow/latefusion.predictions/test.images --compute_rolling_window
+python slim/predict_late_fusion.py --input_model /Exp/2kporn/art/inception_v4/s1_a/fusion_opticalflow/latefusion.models/latefusion.LINEAR.model --input_dir /Exp/2kporn/art/inception_v4/s1_a/fusion_opticalflow/latefusion.features --pool_by_id none  --output_predictions /Exp/2kporn/art/inception_v4/s1_a/fusion_opticalflow/latefusion.predictions/test.prediction.txt --output_metrics /Exp/2kporn/art/inception_v4/s1_a/fusion_opticalflow/latefusion.predictions/test.metrics.txt --output_images /Exp/2kporn/art/inception_v4/s1_a/fusion_opticalflow/latefusion.predictions/test.images --compute_rolling_window
 
+python scripts/results_2_etf.py --output_predictions /Exp/2kporn/art/inception_v4/s1_a/fusion_opticalflow/svm.predictions/test.prediction.txt --output_path /Exp/2kporn/art/inception_v4/s1_a/fusion_opticalflow/etf --fps_sampled 1 --set_to_process test --column k_prob_g5 --fold_to_process s1_a
+
+
+python etf_analyze.py /Exp/2kporn/art/inception_v4/s1_a/fusion_opticalflow/etf/test/ground_truth/all.txt /Exp/2kporn/art/inception_v4/s1_a/fusion_opticalflow/etf/test/etf_list.txt
