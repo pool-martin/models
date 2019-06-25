@@ -39,11 +39,12 @@ parser = argparse.ArgumentParser(prog='train_svm_layer.py', description='Predict
 parser.add_argument('--input_model', type=str, required=True, help='input trained model, in pickle format.')
 parser.add_argument('--output_predictions', type=str , help='input file with the test data, in isbi challenge format (default=stdout).')
 parser.add_argument('--input_split', type=str, required=True, help='input split to extract.')
+parser.add_argument('--experiment', type=str, default='saliency', help='input split to extract.')
 
 FLAGS = parser.parse_args()
 
 first = start = su.print_and_time('Reading trained model...', file=sys.stderr)
-input_model = os.path.join('/Exp/2kporn/art/inception_v4', FLAGS.input_split, 'saliency/svm.models/svm.model')
+input_model = os.path.join('/Exp/2kporn/art/inception_v4', FLAGS.input_split, '{}/svm.models/svm.model'.format(FLAGS.experiment))
 model_file = open(input_model, 'rb')
 preprocessor = pickle.load(model_file)
 classifier_m = pickle.load(model_file)
@@ -52,7 +53,7 @@ model_file.close()
 
 first = start = su.print_and_time('Reading train data...', file=sys.stderr)
 
-input_training = os.path.join('/Exp/2kporn/art/inception_v4', FLAGS.input_split, 'saliency/svm.features')
+input_training = os.path.join('/Exp/2kporn/art/inception_v4', FLAGS.input_split, '{}/svm.features'.format(FLAGS.experiment))
 ids_train, labels_train, features_train = su.read_pickled_data(os.path.join(input_training, 'feats.train'))
 ids_val, labels_val, features_val = su.read_pickled_data(os.path.join(input_training, 'feats.validation'))
 ids_test, labels_test, features_test = su.read_pickled_data(os.path.join(input_training, 'feats.test'))
@@ -90,12 +91,12 @@ if not os.path.exists(FLAGS.output_predictions):
 
 start = su.print_and_time('Save to file ...\n', past=start, file=sys.stderr)
 
-outfile = open(os.path.join(FLAGS.output_predictions, 'saliency.train_and_val.predictions'), 'w') if FLAGS.output_predictions else sys.stdout
+outfile = open(os.path.join(FLAGS.output_predictions, '{}.train_and_val.predictions'.format(FLAGS.experiment)), 'w') if FLAGS.output_predictions else sys.stdout
 for i in range(len(image_ids)) :
   print(image_ids[i].decode("utf-8"), labels[i], predictions_train[i], confidence_scores_train[i], sep=',', file=outfile)
 outfile.close()
 
-outfile = open(os.path.join(FLAGS.output_predictions, 'saliency.test.predictions'), 'w') if FLAGS.output_predictions else sys.stdout
+outfile = open(os.path.join(FLAGS.output_predictions, '{}.test.predictions'.format(FLAGS.experiment)), 'w') if FLAGS.output_predictions else sys.stdout
 for i in range(len(ids_test)) :
   print(ids_test[i].decode("utf-8"), labels_test[i], predictions_test[i], confidence_scores_test[i], sep=',', file=outfile)
 outfile.close()
@@ -150,7 +151,7 @@ outfile.close()
 
 ##############################################
 
-df = pd.read_csv(os.path.join(FLAGS.output_predictions, 'saliency.train_and_val.predictions'), names=['Frame', 'previous_labels', 'prob_porn', 'score_porn'])
+df = pd.read_csv(os.path.join(FLAGS.output_predictions, '{}.train_and_val.predictions'.format(FLAGS.experiment)), names=['Frame', 'previous_labels', 'prob_porn', 'score_porn'])
 #df = pd.read_csv(os.path.join('/Exp/2kporn/art/inception_v4/', FLAGS.input_split, '/saliency/svm.predictions/test.prediction.txt.k_test'), names=['Frame', 'previous_labels', 'prob_porn', 'score_porn'])
 df = df.sort_values(by='Frame')
 df = df.drop_duplicates(subset='Frame')
@@ -162,7 +163,7 @@ df2 = df2.sort_values(by='Frame')
 df2 = df2.drop_duplicates(subset='Frame')
 
 
-dfjoined = df.set_index('Frame', drop=False).join(df2.set_index('Frame', drop=False), on='Frame', how='inner', lsuffix='_saliency', rsuffix='_finetune')
+dfjoined = df.set_index('Frame', drop=False).join(df2.set_index('Frame', drop=False), on='Frame', how='inner', lsuffix='_experiment', rsuffix='_finetune')
 dfjoined.dropna(axis=0, how='any', thresh=None, subset=None, inplace=True)
 
 print('\n joined', end='', file=sys.stderr)
@@ -172,7 +173,7 @@ dfjoined.to_pickle(os.path.join(FLAGS.output_predictions, 'joint.train_and_eval.
 #############################################
 print('=================\n process test files', end='', file=sys.stderr)
 
-df = pd.read_csv(os.path.join(FLAGS.output_predictions, 'saliency.test.predictions'), names=['Frame', 'previous_labels', 'prob_porn', 'score_porn'])
+df = pd.read_csv(os.path.join(FLAGS.output_predictions, '{}.test.predictions'.format(FLAGS.experiment)), names=['Frame', 'previous_labels', 'prob_porn', 'score_porn'])
 df = df.sort_values(by='Frame')
 print('\n Sorted by frame', end='', file=sys.stderr)
 df = df.drop_duplicates(subset='Frame')
@@ -182,7 +183,7 @@ df2 = df2.sort_values(by='Frame')
 df2 = df2.drop_duplicates(subset='Frame')
 
 
-dfjoined = df.set_index('Frame', drop=False).join(df2.set_index('Frame', drop=False), on='Frame', how='left', lsuffix='_saliency', rsuffix='_finetune')
+dfjoined = df.set_index('Frame', drop=False).join(df2.set_index('Frame', drop=False), on='Frame', how='left', lsuffix='_experiment', rsuffix='_finetune')
 #dfjoined.dropna(axis=0, how='any', thresh=None, subset=None, inplace=True)
 dfjoined.fillna(dfjoined.mean(), inplace=True)
 
