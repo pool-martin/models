@@ -143,6 +143,22 @@ rsync -chavzP jp@dl-01:/work/jp/models .
 python scripts/tf/collect_errors.py --output_predictions /Exp/2kporn/art/inception_v4/s1_a/finetune/svm.predictions/test.prediction.txt --output_path /Exp/2kporn/art/inception_v4/s1_a/finetune/error_examples --fold_to_process s1_a
 
 
+
+#####################################################
+
+Saliency Map:
+
+python slim/train_image_classifier.py --train_dir=/Exp/2kporn/art/inception_v4/s2_b/saliency/checkpoints --dataset_dir=/DL/2kporn/saliency_tfrecords/s2_b --dataset_name=porn2k     --dataset_split_name=train     --model_name=inception_v4     --checkpoint_path=/DL/initial_weigths/inception_v4/rgb_imagenet/model.ckpt --checkpoint_exclude_scopes=InceptionV4/Logits,InceptionV4/AuxLogits --save_interval_secs=3600     --optimizer=rmsprop     --normalize_per_image=1  --train_image_size=224   --max_number_of_steps=115000 --experiment_tag="Experiment: saliency; Model: Inceptionv4; Normalization: mode 1" --experiment_file=experiment.meta --batch_size=48 --gpu_to_use=1
+
+python slim/eval_image_classifier.py  --base_dir=/Exp/2kporn/art/inception_v4/s2_b/saliency --dataset_dir=/DL/2kporn/saliency_tfrecords/s2_b --dataset_name=porn2k     --dataset_split_name=validation --model_name=inception_v4 --eval_image_size=224 --batch_size=10 --gpu_to_use=1
+
+
+python slim/predict_image_classifier.py --alsologtostderr --base_dir=/Exp/2kporn/art/inception_v4/s2_a/saliency --dataset_dir=/DL/2kporn/saliency_tfrecords/s2_a --task_name=label --dataset_name=porn2k --model_name=inception_v4 --preprocessing_name=porn2k --id_field_name=id --eval_replicas=1 --eval_image_size=224 --pool_features=none --pool_scores=none --extract_features --add_scores_to_features=probs --output_format=pickle --normalize_per_image=1 --batch_size=160 --gpu_to_use=1
+
+python slim/train_svm_layer.py --input_training /Exp/2kporn/art/inception_v4/s1_a/saliency/svm.features --output_model /Exp/2kporn/art/inception_v4/s1_a/saliency/svm.models/svm.model --jobs 5 --svm_method LINEAR_DUAL --preprocess NONE --max_iter_hyper 13
+
+
+python slim/predict_svm_layer.py --input_model /Exp/2kporn/art/inception_v4/s1_a/saliency/svm.models/svm.model --input_test /Exp/2kporn/art/inception_v4/s1_a/saliency/svm.features/feats.test --pool_by_id none  --output_predictions /Exp/2kporn/art/inception_v4/s1_a/saliency/svm.predictions/test.prediction.txt --output_metrics /Exp/2kporn/art/inception_v4/s1_a/saliency/svm.predictions/test.metrics.txt --output_images /Exp/2kporn/art/inception_v4/s1_a/saliency/svm.predictions/test.images --compute_rolling_window
 python slim/train_image_classifier.py --train_dir=/Exp/2kporn/art/inception_v4/s3_b/saliency/checkpoints --dataset_dir=/DL/2kporn/saliency_tfrecords/s3_b --dataset_name=porn2k     --dataset_split_name=train     --model_name=inception_v4     --checkpoint_path=/DL/initial_weigths/inception_v4/rgb_imagenet/model.ckpt --checkpoint_exclude_scopes=InceptionV4/Logits,InceptionV4/AuxLogits --save_interval_secs=3600     --optimizer=rmsprop     --normalize_per_image=1  --train_image_size=224   --max_number_of_steps=217224 --experiment_tag="Experiment: Saliency; Model: Inceptionv4; Normalization: mode 1" --experiment_file=experiment.meta --batch_size=48 --gpu_to_use=1
 
 python slim/eval_image_classifier.py  --base_dir=/Exp/2kporn/art/inception_v4/s3_b/saliency --dataset_dir=/DL/2kporn/saliency_tfrecords/s3_b --dataset_name=porn2k     --dataset_split_name=validation --model_name=inception_v4 --eval_image_size=224 --batch_size=10 --gpu_to_use=0
