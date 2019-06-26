@@ -164,6 +164,9 @@ tf.app.flags.DEFINE_float(
     'The minimal end learning rate used by a polynomial decay learning rate.')
 
 tf.app.flags.DEFINE_float(
+    'lr_poly_power', 0.9, 'Power for LR polynomial decay.')
+
+tf.app.flags.DEFINE_float(
     'label_smoothing', 0.0, 'The amount of label smoothing.')
 
 tf.app.flags.DEFINE_float(
@@ -311,7 +314,7 @@ def _configure_learning_rate(num_samples_per_epoch, global_step):
                                      0.0,
 #                                     FLAGS.end_learning_rate,
 #                                     power=1.0,
-                                     power=0.5,
+                                     power=FLAGS.lr_poly_power,
                                      cycle=False,
                                      name='polynomial_decay_learning_rate')
   else:
